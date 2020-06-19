@@ -1,6 +1,7 @@
 package com.opc.paymybuddy.model;
 
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -12,47 +13,47 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.sun.istack.NotNull;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 
 @Entity
 @Table(name="user")
-public class User {
+public class User  implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NotNull
     private Long id;
 	
-	@Column(length=50)
+	@Column(name="lastname",length=50)
     @NotNull
     private String lastname;
 
-    @Column(length=50)
+    @Column(name="firstname",length=50)
     @NotNull
     private String firstname;
 
-    @Column(unique = true)
-  /* @Email */ 
+    @Column(name="email",unique = true)
+    @Email
     @NotNull
     private String email;
 
-    @Column(length=255)
+    @Column(name="password",length=255)
     @NotNull
-   
     private String password;
 
-    @Column(columnDefinition = "Decimal(9,2)")
+    @Column(name="balance",columnDefinition = "Decimal(9,2)")
     @NotNull
     private BigDecimal balance;
 
-    @NotNull
+    @Column(name="createDate")
+	@NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
-    @NotNull
-    @Column(columnDefinition = "TINYINT", length = 1)
+    @Column(name="isActive", columnDefinition = "TINYINT", length = 1)
+	@NotNull
     private boolean isActive;
 
     public User() {
@@ -128,9 +129,7 @@ public class User {
 		return isActive;
 	}
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public void setActive(boolean active) {
+		isActive = active;
 	}
-	
-	
 }

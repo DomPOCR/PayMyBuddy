@@ -12,19 +12,19 @@ import javax.persistence.Table;
 public class BankAccount {
 
     @Id
-    @Column(length=34)
+    @Column(name="iban",length=34)
     @NotNull
     private String iban;
 
-    @Column(length=50)
+    @Column(name="bic",length=50)
     @NotNull
     private String bic;
 
-    @Column(length=50)
+    @Column(name="bankName",length=50)
     @NotNull
     private String bankName;
 
-    @Column(length=50)
+    @Column(name="accountName",length=50)
     @NotNull
     private String accountName;
 }
