@@ -2,10 +2,7 @@ package com.opc.paymybuddy.model;
 
 import com.sun.istack.internal.NotNull;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -28,6 +25,11 @@ public class BankAccount implements Serializable {
     @Column(name = "accountName", length = 50)
     @NotNull
     private String accountName;
+
+    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name="user_id",foreignKey = @ForeignKey(name = "fk_bank_account_user1"))
+    @MapsId
+    private User user;
 
     public BankAccount() {
     }
