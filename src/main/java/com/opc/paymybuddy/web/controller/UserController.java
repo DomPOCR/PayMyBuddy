@@ -46,16 +46,31 @@ public class UserController {
 
     // Ajout d'un user
 
+    /*
+   @PostMapping("/AddUser")
+   @ResponseStatus(HttpStatus.CREATED)
+  public User addUser(@RequestBody @Valid User addUser) {
+
+       User MyUser = userService.addUser(addUser);
+       return addUser;
+   }
+   */
     @PostMapping("/AddUser")
     @ResponseStatus(HttpStatus.CREATED)
-    /*public User addUser(@RequestBody @Valid User addUser) {
-
-        User MyUser = userService.addUser(addUser);
-        return addUser;
-    }
-    */
     public String addUser(@RequestBody @Valid User addUser) {
-        return "USER OK";
+
+        User newUser=null;
+
+        newUser.setFirstname(addUser.getFirstname());
+        newUser.setLastname(addUser.getLastname());
+        newUser.setEmail(addUser.getEmail());
+        newUser.setPassword(addUser.getPassword());
+        newUser.setBalance(addUser.getBalance());
+        newUser.setActive(addUser.isActive());
+
+        userDao.save(newUser);
+
+        return "USER ADDED";
     }
 }
 

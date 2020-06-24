@@ -132,4 +132,12 @@ public class User implements Serializable {
     public void setActive(boolean active) {
         isActive = active;
     }
+
+    public List<BankAccount> getBankAccounts() {
+        return bankAccounts;
+    }
+
+    public void setBankAccounts(List<BankAccount> bankAccounts) {
+        this.bankAccounts = bankAccounts;
+    }
 }
