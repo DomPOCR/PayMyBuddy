@@ -52,8 +52,8 @@ public class User implements Serializable {
     @NotNull
     private boolean isActive;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    private List<BankAccount> bankAccounts;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private List<BankAccount> listBankAccounts;
 
 
     public User() {
@@ -133,11 +133,11 @@ public class User implements Serializable {
         isActive = active;
     }
 
-    public List<BankAccount> getBankAccounts() {
-        return bankAccounts;
+    public List<BankAccount> getListBankAccounts() {
+        return listBankAccounts;
     }
 
-    public void setBankAccounts(List<BankAccount> bankAccounts) {
-        this.bankAccounts = bankAccounts;
+    public void setListBankAccounts(List<BankAccount> listBankAccounts) {
+        this.listBankAccounts = listBankAccounts;
     }
 }

@@ -26,8 +26,8 @@ public class BankAccount implements Serializable {
     @NotNull
     private String accountName;
 
-    @ManyToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="user_id",foreignKey = @ForeignKey(name = "fk_bank_account_user1"))
+    @ManyToOne
+    @JoinColumn(name="user_id")
     private User user;
 
     public BankAccount() {

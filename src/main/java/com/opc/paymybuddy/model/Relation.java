@@ -2,11 +2,7 @@ package com.opc.paymybuddy.model;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 
 @Entity
@@ -14,8 +10,13 @@ import java.util.Date;
 public class Relation implements Serializable {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
-	@Column(name="owner_id")
-    private Long owner_id;
+    @JoinColumn(name = "owner_id")
+    @ManyToMany
+    private User owner_id;
+
+	@Column(name="buddy_id")
+	private User buddy_id;
+
+
+
 }
