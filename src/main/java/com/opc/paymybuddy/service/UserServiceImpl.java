@@ -26,14 +26,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public User addUser(User addUser) {
 
-        User newUser=null;
-        BankAccount newBankAccount=null;
+        User newUser = null;
+        BankAccount newBankAccount = null;
 
         if (!userDao.existsByEmail(addUser.getEmail())) {
 
-        userDao.save(addUser);
+          /*  bankAccountDao.save(addUser.getListBankAccounts().get(addUser.getId()).getIban());*/
+            userDao.save(addUser);
+        }
 
-        } else {
+        else {
             throw new DataAlreadyExistException(
                     "Le mail " + addUser.getEmail() + " existe déjà !!");
         }

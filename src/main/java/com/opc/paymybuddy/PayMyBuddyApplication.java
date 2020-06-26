@@ -16,18 +16,22 @@ public class PayMyBuddyApplication {
 
     public static void main(String[] args) {
 
+
         ConfigurableApplicationContext context = SpringApplication.run(PayMyBuddyApplication.class, args);
 
         // Test de la connexion JPA
         UserDao userDao = context.getBean(UserDao.class);
         System.out.println(userDao.findAll());
 
-        // Test liaison entre user et BankAccount
+        // Test liaison user et BankAccount
         List<User> userList = userDao.findAll();
         System.out.println(userList.get(0).getListBankAccounts().get(0).getIban());
+       // System.out.println(userList.get(0).getListBankAccounts().get(1).getIban());
+
+        // Test liaison user et relation
 
 
-        // SpringApplication.run(PayMyBuddyApplication.class, args);//
+    //   SpringApplication.run(PayMyBuddyApplication.class, args);
     }
 
 }
