@@ -20,25 +20,28 @@ public class UserServiceImpl implements UserService {
     @Autowired
     BankAccountDao bankAccountDao;
     @Autowired
+    BankAccountService bankAccountService;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
 
     @Override
-    public User addUser(User addUser) {
+    public User addUser(User user) {
 
         User newUser = null;
         BankAccount newBankAccount = null;
 
-        if (!userDao.existsByEmail(addUser.getEmail())) {
+        if (!userDao.existsByEmail(user.getEmail())) {
 
-          /*  bankAccountDao.save(addUser.getListBankAccounts().get(addUser.getId()).getIban());*/
-            userDao.save(addUser);
+          // newBankAccount = bankAccountService.addBankAccount(user.getListBankAccounts().get(user.getId()),user);
+
+            userDao.save(user);
         }
 
         else {
             throw new DataAlreadyExistException(
-                    "Le mail " + addUser.getEmail() + " existe déjà !!");
+                    "Le mail " + user.getEmail() + " existe déjà !!");
         }
-        return addUser;
+        return user;
     }
 }

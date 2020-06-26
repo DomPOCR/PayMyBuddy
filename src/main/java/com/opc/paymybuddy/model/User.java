@@ -3,6 +3,7 @@ package com.opc.paymybuddy.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class User implements Serializable {
     private boolean isActive;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    private List<BankAccount> listBankAccounts;
+    private List<BankAccount> listBankAccounts = new ArrayList<>();
 
 
     public User() {

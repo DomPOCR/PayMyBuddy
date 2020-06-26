@@ -31,6 +31,15 @@ public class BankAccount implements Serializable {
     private User user;
 
     public BankAccount() {
+
+    };
+
+    public BankAccount(String iban, String bic, String bankName, String accountName, User user) {
+        this.iban = iban;
+        this.bic = bic;
+        this.bankName = bankName;
+        this.accountName = accountName;
+        this.user = user;
     }
 
     public String getIban() {

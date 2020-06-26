@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import java.util.List;
 
 @Repository
-public interface UserDao extends JpaRepository<User, Long>{
+public interface UserDao extends JpaRepository<User, Integer>{
 
     List<User> findByEmail(String email);
 
