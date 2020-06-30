@@ -11,8 +11,9 @@ import java.util.List;
 @Repository
 public interface UserDao extends JpaRepository<User, Integer>{
 
-    List<User> findByEmail(String email);
+    public User findByEmail(String email);
 
     public boolean existsByEmail(String email);
+
 
 }

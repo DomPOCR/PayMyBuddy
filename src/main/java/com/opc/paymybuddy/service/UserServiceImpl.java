@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -37,11 +38,23 @@ public class UserServiceImpl implements UserService {
 
             userDao.save(user);
         }
-
         else {
             throw new DataAlreadyExistException(
                     "Le mail " + user.getEmail() + " existe déjà !!");
         }
         return user;
     }
+
+    @Override
+    public List<User> findAll() {
+        return userDao.findAll();
+    }
+
+    @Override
+    public List<User> findBuddyByUser(User user) {
+
+         return userDao.findByEmail(user.getEmail()).getListBuddy();
+
+    }
+
 }

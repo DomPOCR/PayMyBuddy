@@ -1,6 +1,6 @@
 package com.opc.paymybuddy.model;
 
-import com.sun.istack.internal.NotNull;
+import javax.validation.constraints.NotNull;;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,12 +27,11 @@ public class BankAccount implements Serializable {
     private String accountName;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public BankAccount() {
-
-    };
+    }
 
     public BankAccount(String iban, String bic, String bankName, String accountName, User user) {
         this.iban = iban;

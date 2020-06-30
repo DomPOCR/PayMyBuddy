@@ -56,18 +56,23 @@ public class User implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private List<BankAccount> listBankAccounts = new ArrayList<>();
 
+    @ManyToMany      // Table relation
+    @JoinTable(name = "relation")
+    private List<User> listBuddy;
+
 
     public User() {
         super();
     }
 
-    public User(String lastname, String firstname, String email,
-                String password) {
-        super();
+    public User(@NotNull String lastname, @NotNull String firstname, @Email @NotNull String email,
+                @NotNull String password, @NotNull BigDecimal balance, @NotNull boolean isActive) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.email = email;
         this.password = password;
+        this.balance = balance;
+        this.isActive = isActive;
     }
 
     public int getId() {
@@ -140,5 +145,13 @@ public class User implements Serializable {
 
     public void setListBankAccounts(List<BankAccount> listBankAccounts) {
         this.listBankAccounts = listBankAccounts;
+    }
+
+    public List<User> getListBuddy() {
+        return listBuddy;
+    }
+
+    public void setListBuddy(List<User> listBuddy) {
+        this.listBuddy = listBuddy;
     }
 }

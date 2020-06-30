@@ -1,7 +1,7 @@
 package com.opc.paymybuddy.model;
 
 
-import com.sun.istack.internal.NotNull;
+import javax.validation.constraints.NotNull;;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,7 +31,8 @@ public class Relation implements Serializable {
     @JoinColumn(name = "buddy_id")
     private List<User> buddyList;
 
-    public Relation(){};
+    public Relation() {
+    }
 
     public int getOwner_id() {
         return owner_id;
