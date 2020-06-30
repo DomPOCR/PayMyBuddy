@@ -6,23 +6,31 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "internal_transfert")
-public class InternalTransfert implements Serializable {
+@PrimaryKeyJoinColumn(name = "transfert_id")            // PK de l'entité mère
+public class InternalTransfert extends Transfert implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="transfert_id")
-    @NotNull
-    private Long transfert_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User userSender;
 
-    public InternalTransfert() {
+    @ManyToOne
+    @JoinColumn(name = "user_id1")
+    private User userReceiver;
+
+    public User getUserSender() {
+        return userSender;
     }
 
-    public Long getTransfert_id() {
-        return transfert_id;
+    public void setUserSender(User userSender) {
+        this.userSender = userSender;
     }
 
-    public void setTransfert_id(Long transfert_id) {
-        this.transfert_id = transfert_id;
+    public User getUserReceiver() {
+        return userReceiver;
+    }
+
+    public void setUserReceiver(User userReceiver) {
+        this.userReceiver = userReceiver;
     }
 }
 

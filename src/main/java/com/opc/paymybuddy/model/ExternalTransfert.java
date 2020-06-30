@@ -7,28 +7,17 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "external_transfert")
-public class ExternalTransfert implements Serializable {
+@PrimaryKeyJoinColumn(name = "transfert_id")            // PK de l'entité mère
+public class ExternalTransfert extends Transfert implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
-    @Column(name="transfert_id")
-    private Long transfert_id;
 
-    @Column(name="fees",columnDefinition = "Decimal(9,2)")
+    @Column(name = "fees", columnDefinition = "Decimal(9,2)", precision = 9, scale = 2)
     @NotNull
     private BigDecimal fees;
 
-    public ExternalTransfert() {
-    }
-
-    public Long getTransfert_id() {
-        return transfert_id;
-    }
-
-    public void setTransfert_id(Long transfert_id) {
-        this.transfert_id = transfert_id;
-    }
+    @ManyToOne
+    @JoinColumn(name="bank_account_iban")
+    private BankAccount bankAccount;
 
     public BigDecimal getFees() {
         return fees;
@@ -36,5 +25,13 @@ public class ExternalTransfert implements Serializable {
 
     public void setFees(BigDecimal fees) {
         this.fees = fees;
+    }
+
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
     }
 }

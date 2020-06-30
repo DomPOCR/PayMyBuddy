@@ -7,36 +7,40 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "transfert")
+@Inheritance(strategy = InheritanceType.JOINED) // La PK est partagée dans 2 sous entités
 public class Transfert implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @NotNull
-    private Long id;
+    private Integer id;
 
-    @Column(name = "amount", columnDefinition = "Decimal(9,2)")
+    @Column(name = "amount", columnDefinition = "Decimal(9,2)", precision = 9,scale = 2)
     @NotNull
     private BigDecimal amount;
 
-    @Column(name = "bankName", length = 50)
+    @Column(name = "description", length = 255)
+    private String description;
+
+    @Column(name = "transactionDate")
     @NotNull
-    private String bankName;
+    private Date transactionDate;
 
-    @Column(name = "accountName", length = 50)
     @NotNull
-    private String accountName;
+    @Enumerated(EnumType.STRING)  // Persistance en mode texte plutôt que position dans la liste
+    private TransfertStatus status;
 
-    public Transfert() {
-    }
 
-    public Long getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -48,19 +52,28 @@ public class Transfert implements Serializable {
         this.amount = amount;
     }
 
-    public String getBankName() {
-        return bankName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getAccountName() {
-        return accountName;
+    public Date getTransactionDate() {
+        return transactionDate;
     }
 
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
+    public void setTransactionDate(Date transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+
+    public TransfertStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TransfertStatus status) {
+        this.status = status;
     }
 }
+

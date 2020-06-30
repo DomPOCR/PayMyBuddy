@@ -32,7 +32,7 @@ public class UserController {
 
     @GetMapping("/Users/{email}")
     @ResponseStatus(HttpStatus.OK)
-    public List<User> listUsersByEmail(@PathVariable String email) {
+    public User UserByEmail(@PathVariable String email) {
         return userDao.findByEmail(email);
     }
 

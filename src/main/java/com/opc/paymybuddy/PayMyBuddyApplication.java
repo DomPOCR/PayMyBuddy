@@ -1,5 +1,7 @@
 package com.opc.paymybuddy;
 
+import com.opc.paymybuddy.dao.ExternalTransfertDao;
+import com.opc.paymybuddy.dao.InternalTransfertDao;
 import com.opc.paymybuddy.dao.UserDao;
 import com.opc.paymybuddy.model.Relation;
 import com.opc.paymybuddy.model.User;
@@ -19,8 +21,10 @@ public class PayMyBuddyApplication {
 
         // ---------- Lancement des TESTS
 
+
         ConfigurableApplicationContext context = SpringApplication.run(PayMyBuddyApplication.class, args);
 
+        /*
         // Test de la connexion JPA
         UserDao userDao = context.getBean(UserDao.class);
         System.out.println("Liste des users : " + userDao.findAll());
@@ -32,9 +36,18 @@ public class PayMyBuddyApplication {
 
         // Test liaison user et relation
 
+         */
+        // Test Transferts
+        ExternalTransfertDao externalTransfertDao = context.getBean(ExternalTransfertDao.class);
+        System.out.println(externalTransfertDao.findAll().get(0).getStatus());
+
+        InternalTransfertDao internalTransfertDao = context.getBean(InternalTransfertDao.class);
+        System.out.println(internalTransfertDao.findAll().get(0).getDescription());
+
+
 
         // Lancement normal
-        //  SpringApplication.run(PayMyBuddyApplication.class, args);
+        // SpringApplication.run(PayMyBuddyApplication.class, args);
     }
 
 }

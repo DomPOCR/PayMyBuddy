@@ -14,12 +14,11 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "user", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email", name = "uniqueEmailConstraint")})
-
+@UniqueConstraint(columnNames = "email", name = "uniqueEmailConstraint")})
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @NotNull
     private int id;
 
