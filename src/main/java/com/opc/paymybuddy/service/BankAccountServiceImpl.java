@@ -21,9 +21,9 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public BankAccount addBankAccount(BankAccount bankAccount, User user) {
 
-        BankAccount newBankAccount = null;
+       BankAccount newBankAccount = null;
         BankAccount addBankAccount = new BankAccount(bankAccount.getIban(), bankAccount.getBic(),
-                bankAccount.getBankName(), bankAccount.getAccountName(), user);
+                bankAccount.getBankName(), bankAccount.getAccountName(),user);
         newBankAccount = bankAccountDao.save(addBankAccount);
 
         return newBankAccount;

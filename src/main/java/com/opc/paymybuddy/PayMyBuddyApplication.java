@@ -2,6 +2,7 @@ package com.opc.paymybuddy;
 
 import com.opc.paymybuddy.dao.ExternalTransfertDao;
 import com.opc.paymybuddy.dao.InternalTransfertDao;
+import com.opc.paymybuddy.dao.RelationDao;
 import com.opc.paymybuddy.dao.UserDao;
 import com.opc.paymybuddy.model.Relation;
 import com.opc.paymybuddy.model.User;
@@ -34,20 +35,23 @@ public class PayMyBuddyApplication {
         System.out.println("IBAN n°1 : " + userList.get(0).getListBankAccounts().get(0).getIban());
         // System.out.println(userList.get(0).getListBankAccounts().get(1).getIban());
 
-        // Test liaison user et relation
 
-         */
+
+        // Test liaison user et relation
+        RelationDao relationDao = context.getBean(RelationDao.class);
+        System.out.println("Liste amis user 1 " + relationDao.findAll().get(0).getBuddyList());
+
+
         // Test Transferts
         ExternalTransfertDao externalTransfertDao = context.getBean(ExternalTransfertDao.class);
-        System.out.println(externalTransfertDao.findAll().get(0).getStatus());
+        System.out.println("Status 1er transfert " + externalTransfertDao.findAll().get(0).getStatus());
 
         InternalTransfertDao internalTransfertDao = context.getBean(InternalTransfertDao.class);
-        System.out.println(internalTransfertDao.findAll().get(0).getDescription());
+        System.out.println("Description 1er transfert " + internalTransfertDao.findAll().get(0).getDescription());
 
-
+        */
 
         // Lancement normal
-        // SpringApplication.run(PayMyBuddyApplication.class, args);
+         SpringApplication.run(PayMyBuddyApplication.class, args);
     }
-
 }

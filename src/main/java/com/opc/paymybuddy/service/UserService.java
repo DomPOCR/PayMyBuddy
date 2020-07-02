@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface UserService {
 
-    public User addUser(User addUser);
+    public User addUser(User newUser);
     public List<User> findAll();
     public List<User> findBuddyByUser(User user);
+    public User addBuddy(User newBuddy);
+
 }

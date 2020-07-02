@@ -34,11 +34,11 @@ public class UserServiceImpl implements UserService {
 
         if (!userDao.existsByEmail(user.getEmail())) {
 
-          // newBankAccount = bankAccountService.addBankAccount(user.getListBankAccounts().get(user.getId()),user);
+           // newBankAccount = bankAccountService.addBankAccount(user.getListBankAccounts().get(user.getId()),user);
 
+           // bankAccountDao.save(newBankAccount);
             userDao.save(user);
-        }
-        else {
+        } else {
             throw new DataAlreadyExistException(
                     "Le mail " + user.getEmail() + " existe déjà !!");
         }
@@ -53,8 +53,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findBuddyByUser(User user) {
 
-         return userDao.findByEmail(user.getEmail()).getListBuddy();
+        return userDao.findByEmail(user.getEmail()).getListBuddy();
 
+    }
+
+    @Override
+    public User addBuddy(User newBuddy) {
+
+        return null;
     }
 
 }

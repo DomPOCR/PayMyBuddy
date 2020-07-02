@@ -23,11 +23,11 @@ public class Relation implements Serializable {
     @Column(name = "buddy_id")
     private int buddy_id;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     private List<User> ownerList;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "buddy_id")
     private List<User> buddyList;
 

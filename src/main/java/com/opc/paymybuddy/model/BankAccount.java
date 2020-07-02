@@ -1,5 +1,6 @@
 package com.opc.paymybuddy.model;
 
+import javax.jws.soap.SOAPBinding;
 import javax.validation.constraints.NotNull;;
 
 import javax.persistence.*;
@@ -41,6 +42,7 @@ public class BankAccount implements Serializable {
         this.user = user;
     }
 
+
     public String getIban() {
         return iban;
     }
@@ -71,5 +73,13 @@ public class BankAccount implements Serializable {
 
     public void setAccountName(String accountName) {
         this.accountName = accountName;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
