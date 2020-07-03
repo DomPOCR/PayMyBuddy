@@ -18,16 +18,9 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Autowired
     UserDao userDao;
 
+
     @Override
-    public BankAccount addBankAccount(BankAccount bankAccount, User user) {
-
-       BankAccount newBankAccount = null;
-        BankAccount addBankAccount = new BankAccount(bankAccount.getIban(), bankAccount.getBic(),
-                bankAccount.getBankName(), bankAccount.getAccountName(),user);
-        newBankAccount = bankAccountDao.save(addBankAccount);
-
-        return newBankAccount;
-
+    public BankAccount addBankAccount(BankAccount bankAccount) {
+        return null;
     }
-
 }

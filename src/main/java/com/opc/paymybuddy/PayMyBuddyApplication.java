@@ -22,10 +22,10 @@ public class PayMyBuddyApplication {
 
         // ---------- Lancement des TESTS
 
-
+/*
         ConfigurableApplicationContext context = SpringApplication.run(PayMyBuddyApplication.class, args);
 
-        /*
+
         // Test de la connexion JPA
         UserDao userDao = context.getBean(UserDao.class);
         System.out.println("Liste des users : " + userDao.findAll());
@@ -49,7 +49,7 @@ public class PayMyBuddyApplication {
         InternalTransfertDao internalTransfertDao = context.getBean(InternalTransfertDao.class);
         System.out.println("Description 1er transfert " + internalTransfertDao.findAll().get(0).getDescription());
 
-        */
+*/
 
         // Lancement normal
          SpringApplication.run(PayMyBuddyApplication.class, args);

@@ -5,6 +5,6 @@ import com.opc.paymybuddy.model.User;
 
 public interface BankAccountService {
 
-    public BankAccount addBankAccount(BankAccount bankAccount, User user);
+    public BankAccount addBankAccount(BankAccount bankAccount);
 
 }

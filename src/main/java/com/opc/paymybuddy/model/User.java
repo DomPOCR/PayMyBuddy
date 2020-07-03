@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "user", uniqueConstraints = {
-@UniqueConstraint(columnNames = "email", name = "uniqueEmailConstraint")})
+        @UniqueConstraint(columnNames = "email", name = "uniqueEmailConstraint")})
 public class User implements Serializable {
 
     @Id
@@ -43,19 +43,20 @@ public class User implements Serializable {
     @NotNull
     private BigDecimal balance;
 
-    @Column(name = "createDate")
+    //@Column(name = "createDate")
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
-    @Column(name = "isActive", columnDefinition = "TINYINT", length = 1)
+    @Column(/*name = "is_Active",*/ columnDefinition = "TINYINT", length = 1)
     @NotNull
     private boolean isActive;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    private List<BankAccount> listBankAccounts = new ArrayList<>();
 
-    @ManyToMany      // Table relation
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<BankAccount> listBankAccounts;
+
+    @ManyToMany(fetch = FetchType.LAZY)      // Table relation
     @JoinTable(name = "relation")
     private List<User> listBuddy;
 

@@ -1,6 +1,5 @@
 package com.opc.paymybuddy.model;
 
-import javax.jws.soap.SOAPBinding;
 import javax.validation.constraints.NotNull;;
 
 import javax.persistence.*;
@@ -27,21 +26,9 @@ public class BankAccount implements Serializable {
     @NotNull
     private String accountName;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_bank_account_user1"))
     private User user;
-
-    public BankAccount() {
-    }
-
-    public BankAccount(String iban, String bic, String bankName, String accountName, User user) {
-        this.iban = iban;
-        this.bic = bic;
-        this.bankName = bankName;
-        this.accountName = accountName;
-        this.user = user;
-    }
-
 
     public String getIban() {
         return iban;
@@ -75,8 +62,8 @@ public class BankAccount implements Serializable {
         this.accountName = accountName;
     }
 
-    public User getUser() {
-        return user;
+    public int getUser() {
+        return user.getId();
     }
 
     public void setUser(User user) {
