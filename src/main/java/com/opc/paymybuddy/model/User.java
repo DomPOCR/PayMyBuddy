@@ -1,7 +1,6 @@
 package com.opc.paymybuddy.model;
 
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,13 +13,13 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "user", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email", name = "uniqueEmailConstraint")})
-public class User implements Serializable {
+@UniqueConstraint(columnNames = "email", name = "uniqueEmailConstraint")})
+public class User  {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
-    private int id;
+    private Integer id;
 
     @Column(name = "lastname", length = 50)
     @NotNull
@@ -43,43 +42,26 @@ public class User implements Serializable {
     @NotNull
     private BigDecimal balance;
 
-    //@Column(name = "createDate")
+    @Column
     @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
-    @Column(/*name = "is_Active",*/ columnDefinition = "TINYINT", length = 1)
+    @Column
     @NotNull
     private boolean isActive;
 
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(mappedBy = "user")
     private List<BankAccount> listBankAccounts;
 
-    @ManyToMany(fetch = FetchType.LAZY)      // Table relation
-    @JoinTable(name = "relation")
-    private List<User> listBuddy;
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)      // Table relation
+    private List<Relation> listRelations;
 
-
-    public User() {
-        super();
-    }
-
-    public User(@NotNull String lastname, @NotNull String firstname, @Email @NotNull String email,
-                @NotNull String password, @NotNull BigDecimal balance, @NotNull boolean isActive) {
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.email = email;
-        this.password = password;
-        this.balance = balance;
-        this.isActive = isActive;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -147,11 +129,11 @@ public class User implements Serializable {
         this.listBankAccounts = listBankAccounts;
     }
 
-    public List<User> getListBuddy() {
-        return listBuddy;
+    public List<Relation> getListRelations() {
+        return listRelations;
     }
 
-    public void setListBuddy(List<User> listBuddy) {
-        this.listBuddy = listBuddy;
+    public void setListRelations(List<Relation> listRelations) {
+        this.listRelations = listRelations;
     }
 }

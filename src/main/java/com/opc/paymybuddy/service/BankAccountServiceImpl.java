@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 @Service
-@Transactional
 public class BankAccountServiceImpl implements BankAccountService {
 
     @Autowired
@@ -18,9 +17,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Autowired
     UserDao userDao;
 
-
-    @Override
     public BankAccount addBankAccount(BankAccount bankAccount) {
-        return null;
+        return bankAccount;
     }
 }

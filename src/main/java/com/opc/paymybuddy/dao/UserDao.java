@@ -7,13 +7,14 @@ import com.opc.paymybuddy.model.User;
 
 import javax.persistence.Id;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserDao extends JpaRepository<User, Integer>{
 
-    public User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    public boolean existsByEmail(String email);
+    boolean existsByEmail(String email);
 
 
 }

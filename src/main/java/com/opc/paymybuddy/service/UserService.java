@@ -6,10 +6,10 @@ import java.util.List;
 
 
 public interface UserService {
-
+/*
     public User addUser(User newUser) throws Exception;
     public List<User> findAll();
-    public List<User> findBuddyByUser(User user);
+    public List<User> findBuddyByUser(User relation);
     public User addBuddy(User newBuddy);
-
+*/
 }

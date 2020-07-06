@@ -4,65 +4,46 @@ package com.opc.paymybuddy.model;
 import javax.validation.constraints.NotNull;;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 
 @Entity
 @Table(name = "relation")
-@IdClass(RelationId.class)
-public class Relation implements Serializable {
+public class Relation {
 
     @Id
-    @NotNull
-    @Column(name = "owner_id")
-    private int owner_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @Id
-    @NotNull
-    @Column(name = "buddy_id")
-    private int buddy_id;
+    @ManyToOne
+    @JoinColumn(name="owner")
+    private User owner;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner_id")
-    private List<User> ownerList;
+    @ManyToOne
+    @JoinColumn(name="buddy")
+    private User buddy;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "buddy_id")
-    private List<User> buddyList;
-
-    public Relation() {
+    public Integer getId() {
+        return id;
     }
 
-    public int getOwner_id() {
-        return owner_id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setOwner_id(int owner_id) {
-        this.owner_id = owner_id;
+    public User getOwner() {
+        return owner;
     }
 
-    public int getBuddy_id() {
-        return buddy_id;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
-    public void setBuddy_id(int buddy_id) {
-        this.buddy_id = buddy_id;
+    public User getBuddy() {
+        return buddy;
     }
 
-    public List<User> getOwnerList() {
-        return ownerList;
-    }
-
-    public void setOwnerList(List<User> ownerList) {
-        this.ownerList = ownerList;
-    }
-
-    public List<User> getBuddyList() {
-        return buddyList;
-    }
-
-    public void setBuddyList(List<User> buddyList) {
-        this.buddyList = buddyList;
+    public void setBuddy(User buddy) {
+        this.buddy = buddy;
     }
 }

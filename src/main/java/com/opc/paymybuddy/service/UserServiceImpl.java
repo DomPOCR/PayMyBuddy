@@ -30,9 +30,11 @@ public class UserServiceImpl implements UserService {
 
         if (!userDao.existsByEmail(user.getEmail())) {
 
-            // newBankAccount = bankAccountService.addBankAccount(user.getListBankAccounts().get(user.getId()),user);
+           /*
+            newBankAccount = bankAccountService.addBankAccount(user.getListBankAccounts().get(user.getId()));
 
-            // bankAccountDao.save(newBankAccount);
+            bankAccountDao.save(newBankAccount);
+            */
             userDao.save(user);
 
         } else {
@@ -45,11 +47,11 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll() {
         return userDao.findAll();
     }
-
+/*
     public List<User> findBuddyByUser(User user) {
         return userDao.findByEmail(user.getEmail()).getListBuddy();
     }
-
+*/
     public User addBuddy(User newBuddy) {
         return null;
     }

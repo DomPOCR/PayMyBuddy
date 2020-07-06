@@ -45,7 +45,7 @@ public class UserController {
     }
 
     // Ajout d'un user
-
+/*
    @PostMapping("/AddUser")
    @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@RequestBody User addUser) throws Exception {
@@ -53,6 +53,6 @@ public class UserController {
        User MyUser = userService.addUser(addUser);
        return addUser;
    }
-
+*/
 }
 

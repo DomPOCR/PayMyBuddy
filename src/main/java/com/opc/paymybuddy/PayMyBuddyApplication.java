@@ -2,14 +2,11 @@ package com.opc.paymybuddy;
 
 import com.opc.paymybuddy.dao.ExternalTransfertDao;
 import com.opc.paymybuddy.dao.InternalTransfertDao;
-import com.opc.paymybuddy.dao.RelationDao;
 import com.opc.paymybuddy.dao.UserDao;
-import com.opc.paymybuddy.model.Relation;
 import com.opc.paymybuddy.model.User;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.List;
@@ -22,7 +19,7 @@ public class PayMyBuddyApplication {
 
         // ---------- Lancement des TESTS
 
-/*
+
         ConfigurableApplicationContext context = SpringApplication.run(PayMyBuddyApplication.class, args);
 
 
@@ -36,12 +33,6 @@ public class PayMyBuddyApplication {
         // System.out.println(userList.get(0).getListBankAccounts().get(1).getIban());
 
 
-
-        // Test liaison user et relation
-        RelationDao relationDao = context.getBean(RelationDao.class);
-        System.out.println("Liste amis user 1 " + relationDao.findAll().get(0).getBuddyList());
-
-
         // Test Transferts
         ExternalTransfertDao externalTransfertDao = context.getBean(ExternalTransfertDao.class);
         System.out.println("Status 1er transfert " + externalTransfertDao.findAll().get(0).getStatus());
@@ -49,9 +40,11 @@ public class PayMyBuddyApplication {
         InternalTransfertDao internalTransfertDao = context.getBean(InternalTransfertDao.class);
         System.out.println("Description 1er transfert " + internalTransfertDao.findAll().get(0).getDescription());
 
-*/
+        //Test Relations
+        System.out.println(userDao.findAll().get(0).getListRelations().get(0).getBuddy());
+
 
         // Lancement normal
-         SpringApplication.run(PayMyBuddyApplication.class, args);
+        // SpringApplication.run(PayMyBuddyApplication.class, args);
     }
 }
