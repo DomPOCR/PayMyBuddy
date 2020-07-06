@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -25,41 +24,33 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-    @Override
     public User addUser(User user) {
 
-        User newUser = null;
         BankAccount newBankAccount = null;
 
         if (!userDao.existsByEmail(user.getEmail())) {
 
-           // newBankAccount = bankAccountService.addBankAccount(user.getListBankAccounts().get(user.getId()),user);
+            // newBankAccount = bankAccountService.addBankAccount(user.getListBankAccounts().get(user.getId()),user);
 
-           // bankAccountDao.save(newBankAccount);
+            // bankAccountDao.save(newBankAccount);
             userDao.save(user);
+
         } else {
-            throw new DataAlreadyExistException(
-                    "Le mail " + user.getEmail() + " existe déjà !!");
+            String mess= String.format("Le mail %s existe déjà !!", user.getEmail());
+            throw new DataAlreadyExistException(mess);
         }
         return user;
     }
 
-    @Override
     public List<User> findAll() {
         return userDao.findAll();
     }
 
-    @Override
     public List<User> findBuddyByUser(User user) {
-
         return userDao.findByEmail(user.getEmail()).getListBuddy();
-
     }
 
-    @Override
     public User addBuddy(User newBuddy) {
-
         return null;
     }
 

@@ -48,7 +48,7 @@ public class UserController {
 
    @PostMapping("/AddUser")
    @ResponseStatus(HttpStatus.CREATED)
-    public User addUser(@RequestBody User addUser) {
+    public User addUser(@RequestBody User addUser) throws Exception {
 
        User MyUser = userService.addUser(addUser);
        return addUser;
