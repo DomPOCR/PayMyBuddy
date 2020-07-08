@@ -2,7 +2,6 @@ package com.opc.paymybuddy.model;
 
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,8 +12,8 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "user", uniqueConstraints = {
-@UniqueConstraint(columnNames = "email", name = "uniqueEmailConstraint")})
-public class User  {
+        @UniqueConstraint(columnNames = "email", name = "uniqueEmailConstraint")})
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,15 +46,16 @@ public class User  {
     //@Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
-    @Column
-    @NotNull
-    private boolean isActive;
-
     @OneToMany(mappedBy = "user")
     private List<BankAccount> listBankAccounts;
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)      // Table relation
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner")      // Table relation
     private List<Relation> listRelations;
+
+
+    public User() {
+        super();
+    }
 
     public Integer getId() {
         return id;
@@ -111,14 +111,6 @@ public class User  {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
     }
 
     public List<BankAccount> getListBankAccounts() {

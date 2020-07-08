@@ -1,11 +1,7 @@
 package com.opc.paymybuddy.model;
 
 
-import javax.validation.constraints.NotNull;;
-
 import javax.persistence.*;
-import java.util.List;
-
 
 @Entity
 @Table(name = "relation")
@@ -13,15 +9,26 @@ public class Relation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name="owner")
+    @JoinColumn(name="owner", foreignKey = @ForeignKey(name = "fk_relation_owner"))
     private User owner;
 
     @ManyToOne
-    @JoinColumn(name="buddy")
+    @JoinColumn(name="buddy", foreignKey = @ForeignKey(name = "fk_relation_buddy"))
     private User buddy;
+
+    @Override
+    public String toString() {
+        return "Relation{" +
+                "id=" + id +
+                ", owner=" + owner.getLastname() + " " + owner.getFirstname() +
+                ", buddy=" + buddy.getLastname() + " " + buddy.getFirstname() +
+                '}';
+    }
+
 
     public Integer getId() {
         return id;
@@ -31,16 +38,16 @@ public class Relation {
         this.id = id;
     }
 
-    public User getOwner() {
-        return owner;
+    public Integer getOwner() {
+        return owner.getId();  //DP
     }
 
     public void setOwner(User owner) {
         this.owner = owner;
     }
 
-    public User getBuddy() {
-        return buddy;
+    public String getBuddy() {
+        return toString(); //DP
     }
 
     public void setBuddy(User buddy) {

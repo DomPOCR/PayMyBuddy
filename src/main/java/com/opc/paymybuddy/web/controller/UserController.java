@@ -1,58 +1,63 @@
-package com.opc.paymybuddy.web.controller;
+            package com.opc.paymybuddy.web.controller;
 
-import com.opc.paymybuddy.dao.UserDao;
+import com.opc.paymybuddy.dto.UserDto;
 import com.opc.paymybuddy.model.User;
 import com.opc.paymybuddy.service.UserService;
+import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+//@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE) // Indique que l'API consomme du JSON
 public class UserController {
-
-    @Autowired
-    private UserDao userDao;
 
     @Autowired
     private UserService userService;
 
     // Liste des users
 
-    @GetMapping("/Users")
+    @GetMapping(value = "/Users")
     @ResponseStatus(HttpStatus.OK)
     public List<User> listUsers() {
-        return userDao.findAll();
+
+        return userService.findAll();
     }
 
     // Liste des users par email
 
-    @GetMapping("/Users/{email}")
+    @GetMapping(value = "/Users/{email}")
     @ResponseStatus(HttpStatus.OK)
     public User UserByEmail(@PathVariable String email) {
-        return userDao.findByEmail(email);
+
+        return userService.findByEmail(email);
     }
 
     // Comptage des users
 
-    @GetMapping("/UsersCount")
+    @GetMapping(value = "/UsersCount")
     @ResponseStatus(HttpStatus.OK)
     public long UsersCount() {
-        return userDao.count();
+
+        return userService.count();
     }
 
     // Ajout d'un user
-/*
-   @PostMapping("/AddUser")
-   @ResponseStatus(HttpStatus.CREATED)
-    public User addUser(@RequestBody User addUser) throws Exception {
+    @RequestMapping(value = "/AddUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addUser(@RequestBody UserDto addUser)  {
 
-       User MyUser = userService.addUser(addUser);
-       return addUser;
-   }
-*/
+        try {
+            userService.addUser(addUser);
+        }catch (Exception exc) {
+            throw new DataAlreadyExistException(
+                    HttpStatus.CONFLICT, "Mail existe déjà");
+        }
+
+
+    }
 }
 
