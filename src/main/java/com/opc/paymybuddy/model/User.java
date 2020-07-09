@@ -43,7 +43,6 @@ public class User {
 
     @Column
     @NotNull
-    //@Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
     @OneToMany(mappedBy = "user")

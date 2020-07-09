@@ -5,6 +5,8 @@ import com.opc.paymybuddy.dao.UserDao;
 import com.opc.paymybuddy.dto.UserDto;
 import com.opc.paymybuddy.model.User;
 import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,7 +30,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     BankAccountService bankAccountService;
 
+    // Encrypt password
     static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
+    // Pour le log4j2
+    static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     @Override
     public List<User> findAll() {
@@ -56,7 +62,10 @@ public class UserServiceImpl implements UserService {
        if (userDao.existsByEmail(addUser.getEmail())) {
 
            String mess= String.format("Le mail %s existe déjà !!", addUser.getEmail());
-           throw new DataAlreadyExistException(HttpStatus.BAD_REQUEST, mess);
+
+           logger.info(mess);
+
+           throw new DataAlreadyExistException(HttpStatus.CONFLICT, mess);
 
         }
 
@@ -70,6 +79,8 @@ public class UserServiceImpl implements UserService {
         user.setId(0);
 
         userDao.save(user);
+        logger.info("Add user OK " + addUser.toString());
+
     }
 
 

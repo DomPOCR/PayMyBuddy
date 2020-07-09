@@ -48,15 +48,9 @@ public class UserController {
 
     // Ajout d'un user
     @RequestMapping(value = "/AddUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addUser(@RequestBody UserDto addUser)  {
+    public void addUser(@RequestBody UserDto addUser) throws Exception {
 
-        try {
-            userService.addUser(addUser);
-        }catch (Exception exc) {
-            throw new DataAlreadyExistException(
-                    HttpStatus.CONFLICT, "Mail existe déjà");
-        }
-
+        userService.addUser(addUser);
 
     }
 }
