@@ -4,11 +4,11 @@ import com.opc.paymybuddy.dao.BankAccountDao;
 import com.opc.paymybuddy.dao.UserDao;
 import com.opc.paymybuddy.dto.UserDto;
 import com.opc.paymybuddy.model.User;
+import com.opc.paymybuddy.web.exceptions.ControllerException;
 import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -59,16 +59,32 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
 
-       if (userDao.existsByEmail(addUser.getEmail())) {
-
-           String mess= String.format("Le mail %s existe déjà !!", addUser.getEmail());
-
-           logger.info(mess);
-
-           throw new DataAlreadyExistException(HttpStatus.CONFLICT, mess);
-
+       if (addUser.getEmail().isEmpty()) {
+            logger.error("inscription : KO");
+            throw new ControllerException("email is required");
+        }
+        if (addUser.getFirstName().isEmpty()) {
+            logger.error("inscription : KO");
+            throw new ControllerException("firstname is required");
+        }
+        if (addUser.getLastName().isEmpty()) {
+            logger.error("inscription : KO");
+            throw new ControllerException("lastname is required");
+        }
+        if (user.getPassword().isEmpty()) {
+            logger.error("inscription : KO");
+            throw new ControllerException("password is required");
         }
 
+        if (userDao.existsByEmail(addUser.getEmail())) {
+
+            String mess= String.format("Le mail %s existe déjà !!", addUser.getEmail());
+
+            logger.info(mess);
+
+            throw new DataAlreadyExistException(mess);   // Ano : n'affiche pas le mess dans Postman
+
+        }
         user.setEmail(addUser.getEmail());
         user.setFirstname(addUser.getFirstName());
         user.setLastname(addUser.getLastName());

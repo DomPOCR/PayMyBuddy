@@ -1,7 +1,12 @@
 package com.opc.paymybuddy.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
 public class UserDto {
 
+    @Email
+    @NotNull
     private String email;
     private String password;
     private String firstName;

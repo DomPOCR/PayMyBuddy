@@ -3,12 +3,11 @@
 import com.opc.paymybuddy.dto.UserDto;
 import com.opc.paymybuddy.model.User;
 import com.opc.paymybuddy.service.UserService;
-import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -47,10 +46,14 @@ public class UserController {
     }
 
     // Ajout d'un user
-    @RequestMapping(value = "/AddUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addUser(@RequestBody UserDto addUser) throws Exception {
+    //@RequestMapping(value = "/AddUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/AddUser")
+    public ResponseEntity<User> addUser(@RequestBody UserDto addUser) throws Exception {
 
         userService.addUser(addUser);
+
+        return new ResponseEntity(addUser, HttpStatus.CREATED);
+
 
     }
 }
