@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
             logger.error("inscription : KO");
             throw new ControllerException("lastname is required");
         }
-        if (user.getPassword().isEmpty()) {
+        if (addUser.getPassword().isEmpty()) {
             logger.error("inscription : KO");
             throw new ControllerException("password is required");
         }

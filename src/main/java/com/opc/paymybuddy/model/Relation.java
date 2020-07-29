@@ -1,6 +1,9 @@
 package com.opc.paymybuddy.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 @Entity
@@ -38,15 +41,27 @@ public class Relation {
         this.id = id;
     }
 
-    public Integer getOwner() {
-        return owner.getId();  //DP
+    @JsonIgnore
+    public User getOwner() {
+        return owner;
+    }
+
+    @JsonProperty("owner")
+    public Integer getOwnerId() {
+        return owner.getId();
     }
 
     public void setOwner(User owner) {
         this.owner = owner;
     }
 
-    public String getBuddy() {
+    @JsonIgnore
+    public User getBuddy() {
+        return buddy;
+    }
+
+    @JsonProperty("buddy")
+    public String getBuddyDetail() {
         return toString(); //DP
     }
 
