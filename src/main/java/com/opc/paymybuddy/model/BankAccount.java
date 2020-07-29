@@ -1,5 +1,8 @@
 package com.opc.paymybuddy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.NotNull;;
 
 import javax.persistence.*;
@@ -62,11 +65,16 @@ public class BankAccount implements Serializable {
         this.accountName = accountName;
     }
 
-    public int getUser() {
-        return user.getId();
+    @JsonIgnore
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+            this.user = user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    @JsonProperty("user")
+    public Integer getUserId() {
+       return user.getId();
     }
 }

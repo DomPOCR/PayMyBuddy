@@ -47,7 +47,7 @@ public class UserControllerTest {
     String passwordTest = "pwd01";
     BigDecimal balanceTest = BigDecimal.valueOf(1000.00);
     Date createDate = now();
-    boolean isActive = true;
+
 
     //@Test
       public void getAllUserControllerTest() throws Exception {
@@ -62,7 +62,6 @@ public class UserControllerTest {
         jsonUser.set("emailTest", TextNode.valueOf(emailTest));
         jsonUser.set("passwordTest", TextNode.valueOf(passwordTest));
         jsonUser.set("balanceTest", TextNode.valueOf(String.valueOf(balanceTest)));
-        jsonUser.set("isActive", TextNode.valueOf(String.valueOf(isActive)));
 
 
         // WHEN
