@@ -12,6 +12,10 @@ public class UserDto {
     private String firstName;
     private String lastName;
 
+    public UserDto(String emailTest, String passwordTest, String lastNameTest, String firstNameTest) {
+
+    }
+
     @Override
     public String toString() {
         return "UserDto{" +

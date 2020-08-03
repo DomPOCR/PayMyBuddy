@@ -4,7 +4,7 @@ import com.opc.paymybuddy.dao.BankAccountDao;
 import com.opc.paymybuddy.dao.UserDao;
 import com.opc.paymybuddy.dto.UserDto;
 import com.opc.paymybuddy.model.User;
-import com.opc.paymybuddy.web.exceptions.ControllerException;
+import com.opc.paymybuddy.web.exceptions.DataMissingException;
 import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(UserDto addUser) throws Exception {
+    public boolean addUser(UserDto addUser) throws Exception {
 
         DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
@@ -61,24 +61,24 @@ public class UserServiceImpl implements UserService {
 
        if (addUser.getEmail().isEmpty()) {
             logger.error("inscription : KO");
-            throw new ControllerException("email is required");
+            throw new DataMissingException("Inscription failed : email is required !!");
         }
         if (addUser.getFirstName().isEmpty()) {
             logger.error("inscription : KO");
-            throw new ControllerException("firstname is required");
+            throw new DataMissingException("Inscription failed : firstname is required !!");
         }
         if (addUser.getLastName().isEmpty()) {
             logger.error("inscription : KO");
-            throw new ControllerException("lastname is required");
+            throw new DataMissingException("Inscription failed : lastname is required !!");
         }
         if (addUser.getPassword().isEmpty()) {
             logger.error("inscription : KO");
-            throw new ControllerException("password is required");
+            throw new DataMissingException("Inscription failed : password is required !!");
         }
 
         if (userDao.existsByEmail(addUser.getEmail())) {
 
-            String mess= String.format("Le mail %s existe déjà !!", addUser.getEmail());
+            String mess= String.format("Inscription failed : this mail %s is already exist !!", addUser.getEmail());
 
             logger.info(mess);
 
@@ -96,11 +96,11 @@ public class UserServiceImpl implements UserService {
 
         userDao.save(user);
         logger.info("Add user OK " + addUser.toString());
-
+        return true;
     }
 
 
-   /* public User addBuddy(User newBuddy) {
+/* public User addBuddy(User newBuddy) {
         return null;
     }
 */

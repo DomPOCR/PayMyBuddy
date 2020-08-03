@@ -12,13 +12,10 @@ public interface UserService {
     long count();
     User findByEmail(String email);
 
-    void addUser(UserDto newUser) throws Exception;
+    boolean addUser(UserDto newUser) throws Exception;
 
 
-
-
-
-    /*
+     /*
     public List<User> findBuddyByUser(User relation);
     public User addBuddy(User newBuddy);
 */
