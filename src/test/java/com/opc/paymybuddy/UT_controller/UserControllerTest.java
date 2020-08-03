@@ -115,7 +115,7 @@ public class UserControllerTest {
 
         // WHEN
         // THEN
-        mockMvc.perform(MockMvcRequestBuilders.get("/AddUser")
+        mockMvc.perform(MockMvcRequestBuilders.post("/AddUser")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonUser.toString())
                 .accept(MediaType.APPLICATION_JSON))

@@ -2,7 +2,6 @@ package com.opc.paymybuddy.UT_service;
 
 import com.opc.paymybuddy.dao.UserDao;
 import com.opc.paymybuddy.dto.UserDto;
-import com.opc.paymybuddy.model.User;
 import com.opc.paymybuddy.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -26,12 +24,10 @@ import static org.assertj.core.util.DateUtil.now;
 public class UserServiceTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    UserService userServiceTest;
 
     @MockBean
     UserDao userDao;
-    @MockBean
-    UserService userService;
 
     // Constantes pour le jeu de test
 
@@ -46,16 +42,16 @@ public class UserServiceTest {
     public void addUserWithNoExistingEmailTest() throws Exception {
 
         // GIVEN
-        UserDto userTest;
-        userTest = new UserDto(emailTest,passwordTest,lastNameTest,firstNameTest);
+
+        UserDto userDtoTest = new UserDto(emailTest,passwordTest,lastNameTest,firstNameTest);
 
         // WHEN
         Mockito.when(userDao.existsByEmail(emailTest)).thenReturn(Boolean.FALSE);
 
         // THEN
-        Assertions.assertTrue( userService.addUser(userTest));
-        assert (userTest.getLastName().equals(lastNameTest));
-        assert (userTest.getFirstName().equals(firstNameTest));
+        Assertions.assertTrue( userServiceTest.addUser(userDtoTest));
+        assert (userDtoTest.getLastName().equals(lastNameTest));
+        assert (userDtoTest.getFirstName().equals(firstNameTest));
 
 
     }
