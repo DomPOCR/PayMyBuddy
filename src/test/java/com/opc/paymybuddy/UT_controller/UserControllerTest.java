@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.opc.paymybuddy.dto.UserDto;
 import com.opc.paymybuddy.model.User;
 import com.opc.paymybuddy.service.UserService;
+import com.opc.paymybuddy.web.controller.UserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -32,11 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-//@ContextConfiguration
-//@SpringBootApplication
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@WebMvcTest(UserController.class)
 public class UserControllerTest {
 
     @Autowired

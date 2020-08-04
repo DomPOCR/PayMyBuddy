@@ -46,7 +46,6 @@ public class UserController {
     }
 
     // Ajout d'un user
-    //@RequestMapping(value = "/AddUser", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping(value = "/AddUser")
     public ResponseEntity<User> addUser(@RequestBody UserDto addUser) throws Exception {
 
@@ -56,5 +55,6 @@ public class UserController {
 
 
     }
+
 }
 

@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Optional;
 
 @Entity
 @Table(name = "bank_account")
@@ -32,6 +33,7 @@ public class BankAccount implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_bank_account_user1"))
     private User user;
+
 
     public String getIban() {
         return iban;
@@ -65,16 +67,18 @@ public class BankAccount implements Serializable {
         this.accountName = accountName;
     }
 
+
     @JsonIgnore
     public User getUser() {
         return user;
     }
-    public void setUser(User user) {
-            this.user = user;
-    }
 
     @JsonProperty("user")
     public Integer getUserId() {
-       return user.getId();
+        return user.getId();
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

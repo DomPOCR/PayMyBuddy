@@ -3,6 +3,7 @@ package com.opc.paymybuddy.web.controller;
 
 import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
 import com.opc.paymybuddy.web.exceptions.DataMissingException;
+import com.opc.paymybuddy.web.exceptions.DataNotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -23,6 +24,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DataAlreadyExistException.class)
     public final ResponseEntity<String> handleDataMissingException(DataAlreadyExistException ex, WebRequest request) {
         return new ResponseEntity(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DataNotExistException.class)
+    public final ResponseEntity<String> handleDataMissingException(DataNotExistException ex, WebRequest request) {
+        return new ResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }

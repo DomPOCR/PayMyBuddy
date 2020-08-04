@@ -12,8 +12,11 @@ public class UserDto {
     private String firstName;
     private String lastName;
 
-    public UserDto(String emailTest, String passwordTest, String lastNameTest, String firstNameTest) {
-
+    public UserDto(@Email @NotNull String email, String password, String firstName, String lastName) {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     @Override

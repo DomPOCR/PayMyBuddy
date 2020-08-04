@@ -25,16 +25,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserDao userDao;
-    @Autowired
-    BankAccountDao bankAccountDao;
-    @Autowired
-    BankAccountService bankAccountService;
 
     // Encrypt password
     static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     // Pour le log4j2
-    static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
+    static final Logger logger = LogManager.getLogger("Services");
 
     @Override
     public List<User> findAll() {
@@ -82,7 +78,7 @@ public class UserServiceImpl implements UserService {
 
             logger.info(mess);
 
-            throw new DataAlreadyExistException(mess);   // Ano : n'affiche pas le mess dans Postman
+            throw new DataAlreadyExistException(mess);
 
         }
         user.setEmail(addUser.getEmail());
