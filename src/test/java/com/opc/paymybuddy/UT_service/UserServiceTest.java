@@ -4,6 +4,7 @@ import com.opc.paymybuddy.dao.UserDao;
 import com.opc.paymybuddy.dto.UserDto;
 import com.opc.paymybuddy.service.UserService;
 import com.opc.paymybuddy.service.UserServiceImpl;
+import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ public class UserServiceTest {
         String emailTest = "EmailTest01@mail.com";
         String passwordTest = "pwd01";
 
-        UserDto userDtoTest = new UserDto(emailTest,passwordTest,firstNameTest,lastNameTest);
+        UserDto userDtoTest = new UserDto(emailTest, passwordTest, firstNameTest, lastNameTest);
 
         // WHEN
         Mockito.when(userDao.existsByEmail(emailTest)).thenReturn(Boolean.FALSE);
@@ -63,8 +64,30 @@ public class UserServiceTest {
         Assertions.assertTrue(userServiceTest.addUser(userDtoTest));
         assert (userDtoTest.getLastName().equals(lastNameTest));
         assert (userDtoTest.getFirstName().equals(firstNameTest));
-
-
     }
 
+    @Test
+    public void addUserWithExistingEmailTest() throws Exception {
+
+        // GIVEN
+
+        // Constantes pour le jeu de test
+
+        String lastNameTest = "NomTest01";
+        String firstNameTest = "PrenomTest01";
+        String emailTest = "EmailTest01@mail.com";
+        String passwordTest = "pwd01";
+
+        UserDto userDtoTest = new UserDto(emailTest, passwordTest, firstNameTest, lastNameTest);
+
+        // WHEN
+        Mockito.when(userDao.existsByEmail(emailTest)).thenReturn(Boolean.TRUE);
+
+        // THEN
+        try {
+            Assertions.assertFalse(userServiceTest.addUser(userDtoTest));
+        } catch (DataAlreadyExistException eExp) {
+            assert (eExp.getMessage().contains("is already exist"));
+        }
+    }
 }
