@@ -51,9 +51,18 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "owner")      // Table relation
     private List<Relation> listRelations;
 
-
     public User() {
         super();
+    }
+
+    public User(@NotNull String lastname, @NotNull String firstname, @Email @NotNull String email, @NotNull String password, @NotNull BigDecimal balance, @NotNull Date createDate) {
+        super();
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.email = email;
+        this.password = password;
+        this.balance = balance;
+        this.createDate = createDate;
     }
 
     public Integer getId() {

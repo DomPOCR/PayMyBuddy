@@ -2,6 +2,7 @@ package com.opc.paymybuddy.service;
 
 import com.opc.paymybuddy.dao.BankAccountDao;
 import com.opc.paymybuddy.dao.UserDao;
+import com.opc.paymybuddy.dto.BankAccountDto;
 import com.opc.paymybuddy.model.BankAccount;
 import com.opc.paymybuddy.model.User;
 
@@ -13,10 +14,11 @@ import org.springframework.stereotype.Service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class BankAccountServiceImpl implements BankAccountService  {
+public class BankAccountServiceImpl implements BankAccountService {
 
     @Autowired
     BankAccountDao bankAccountDao;
@@ -27,9 +29,12 @@ public class BankAccountServiceImpl implements BankAccountService  {
     static final Logger logger = LogManager.getLogger("Services");
 
     @Override
-    public BankAccount addBankAccount(BankAccount addAccount, Integer userId) throws Exception {
+    public List<BankAccount> findAll(){
+        return bankAccountDao.findAll();
+    }
 
-        BankAccount bankAccount = new BankAccount();
+    @Override
+    public BankAccount addBankAccount(BankAccount addAccount, Integer userId) throws Exception {
 
         if (addAccount.getIban().isEmpty()) {
             logger.error("Creation account : KO");
@@ -45,25 +50,21 @@ public class BankAccountServiceImpl implements BankAccountService  {
         }
         if (addAccount.getAccountName().isEmpty()) {
             logger.error("Creation account : KO");
-        throw new DataMissingException("Creation failed : Account name is required !!");
+            throw new DataMissingException("Creation failed : Account name is required !!");
         }
 
-        if (! userDao.existsById(userId)) {  // user inexistant
+        if (!userDao.existsById(userId)) {  // user inexistant
 
-            String mess= String.format("Creation failed : user %s not exist !!", userId);
+            String mess = String.format("Creation failed : user %s not exist !!", userId);
 
             logger.info(mess);
 
             throw new DataNotExistException(mess);
 
         }
+        BankAccount bankAccount = new BankAccount(addAccount.getIban(), addAccount.getBic(), addAccount.getBankName(), addAccount.getAccountName());
 
-        bankAccount.setIban(addAccount.getIban());
-        bankAccount.setBic(addAccount.getBic());
-        bankAccount.setBankName(addAccount.getBankName());
-        bankAccount.setAccountName(addAccount.getAccountName());
-
-        Optional<User> user  = userDao.findById(userId);
+        Optional<User> user = userDao.findById(userId);
         User userBank = new User();
 
         userBank.setId(userId);

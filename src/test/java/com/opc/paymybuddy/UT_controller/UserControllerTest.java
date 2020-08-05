@@ -9,17 +9,12 @@ import com.opc.paymybuddy.service.UserService;
 import com.opc.paymybuddy.web.controller.UserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -55,23 +50,17 @@ public class UserControllerTest {
     String lastNameTest = "NomTest01";
     String firstNameTest = "PrenomTest01";
     String emailTest = "EmailTest01@email.com";
+    String existingEmailTest = "dp@email.com";
     String passwordTest = "pwd01";
+    String existingPasswordTest = "mdp3";
     BigDecimal balanceTest = BigDecimal.valueOf(0);
     Date createDate = now();
 
     @BeforeEach
     public void setUpEach() {
 
-        userMock = new User();
-        userMock.setLastname(lastNameTest);
-        userMock.setFirstname(firstNameTest);
-        userMock.setEmail(emailTest);
-        userMock.setPassword(passwordTest);
-        userMock.setBalance(balanceTest);
-        userMock.setCreateDate(createDate);
-
+        userMock = new User(lastNameTest,firstNameTest,emailTest,passwordTest,balanceTest,createDate);
         userDtoMock = new UserDto(emailTest,passwordTest,lastNameTest,firstNameTest);
-
     }
 
     @Test
@@ -95,16 +84,10 @@ public class UserControllerTest {
     }
 
     @Test
-    public void addUserWithNonExistingEmailTest() throws Exception {
-
-        List<UserDto> userList = new ArrayList<>();
+    public void addUserControllerTest() throws Exception {
 
         ObjectMapper obm = new ObjectMapper();
         ObjectNode jsonUser = obm.createObjectNode();
-
-        // GIVEN
-        userList.add(userDtoMock);
-        Mockito.when(userService.addUser(userDtoMock)).thenReturn(true);
 
         jsonUser.set("email", TextNode.valueOf(emailTest));
         jsonUser.set("password", TextNode.valueOf(passwordTest));
@@ -121,6 +104,31 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$..firstName").value(firstNameTest))
                 .andExpect(MockMvcResultMatchers.jsonPath("$..lastName").value(lastNameTest))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void connectUserControllerTest() throws Exception {
+
+        User user = new User();
+
+        ObjectMapper obm = new ObjectMapper();
+        ObjectNode jsonUser = obm.createObjectNode();
+
+        // GIVEN
+
+        jsonUser.set("email", TextNode.valueOf(existingEmailTest));
+        jsonUser.set("password", TextNode.valueOf(existingPasswordTest));
+
+        // WHEN
+        // THEN
+        mockMvc.perform(MockMvcRequestBuilders.get("/Connect")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonUser.toString())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$..firstName").value(firstNameTest))
+                .andExpect(MockMvcResultMatchers.jsonPath("$..lastName").value(lastNameTest))
+                .andExpect(status().isOk());
     }
 
 

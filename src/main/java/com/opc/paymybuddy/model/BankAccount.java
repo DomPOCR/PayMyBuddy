@@ -34,6 +34,26 @@ public class BankAccount implements Serializable {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_bank_account_user1"))
     private User user;
 
+    public BankAccount(){
+        super();
+    }
+
+    public BankAccount(@NotNull String iban, @NotNull String bic, @NotNull String bankName, @NotNull String accountName) {
+        super();
+        this.iban = iban;
+        this.bic = bic;
+        this.bankName = bankName;
+        this.accountName = accountName;
+    }
+
+    public BankAccount(@NotNull String iban, @NotNull String bic, @NotNull String bankName, @NotNull String accountName, @NotNull User user) {
+        super();
+        this.iban = iban;
+        this.bic = bic;
+        this.bankName = bankName;
+        this.accountName = accountName;
+        this.user = user;
+    }
 
     public String getIban() {
         return iban;

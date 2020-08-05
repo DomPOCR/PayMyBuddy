@@ -1,6 +1,5 @@
 package com.opc.paymybuddy.service;
 
-import com.opc.paymybuddy.dao.BankAccountDao;
 import com.opc.paymybuddy.dao.UserDao;
 import com.opc.paymybuddy.dto.UserDto;
 import com.opc.paymybuddy.model.User;
@@ -26,11 +25,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserDao userDao;
 
+
     // Encrypt password
     static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     // Pour le log4j2
-    static final Logger logger = LogManager.getLogger("Services");
+    final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Override
     public List<User> findAll() {
@@ -93,6 +93,32 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
         logger.info("Add user OK " + addUser.toString());
         return true;
+    }
+
+    @Override
+    public boolean connectUser(UserDto userToConnect) throws Exception {
+
+        if (userToConnect.getEmail().isEmpty()) {
+            logger.error("Connexion : KO");
+            throw new DataMissingException("Connexion failed : email is required !!");
+        }
+        if (userToConnect.getPassword().isEmpty()) {
+            logger.error("Connexion : KO");
+            throw new DataMissingException("Connexion failed : password is required !!");
+        }
+        User userRegistered = userDao.findByEmail(userToConnect.getEmail());
+        if (userRegistered != null) {
+
+            String pwd1 = userToConnect.getPassword();
+            String pwd2 = userRegistered.getPassword();
+
+            if (encoder.matches(pwd1,pwd2)) {
+                userToConnect.setFirstName(userRegistered.getFirstname());
+                userToConnect.setLastName(userRegistered.getLastname());
+                return true;
+            }
+        }
+        return false;
     }
 
 

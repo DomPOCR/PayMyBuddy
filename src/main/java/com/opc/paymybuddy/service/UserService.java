@@ -12,7 +12,9 @@ public interface UserService {
     long count();
     User findByEmail(String email);
 
+
     boolean addUser(UserDto newUser) throws Exception;
+    boolean connectUser(UserDto userDto) throws Exception;
 
 
      /*
