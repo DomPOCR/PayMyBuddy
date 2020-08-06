@@ -3,7 +3,7 @@ package com.opc.paymybuddy.UT_controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.opc.paymybuddy.dto.BankAccountDto;
+
 import com.opc.paymybuddy.model.BankAccount;
 import com.opc.paymybuddy.model.User;
 import com.opc.paymybuddy.service.BankAccountService;

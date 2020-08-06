@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -44,17 +45,22 @@ public class UserControllerTest {
     @MockBean
     private UserDto userDtoMock;
 
+    // Encrypt password
+    static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     // Constantes pour le jeu de test
 
     String lastNameTest = "NomTest01";
     String firstNameTest = "PrenomTest01";
     String emailTest = "EmailTest01@email.com";
-    String existingEmailTest = "dp@email.com";
     String passwordTest = "pwd01";
-    String existingPasswordTest = "mdp3";
     BigDecimal balanceTest = BigDecimal.valueOf(0);
     Date createDate = now();
+
+    String existingLastNameTest = "P";
+    String existingFirstNameTest = "Dom";
+    String existingEmailTest = "dp@email.com";
+    String existingPasswordTest = "mdp3";
 
     @BeforeEach
     public void setUpEach() {
@@ -107,17 +113,20 @@ public class UserControllerTest {
     }
 
     @Test
-    public void connectUserControllerTest() throws Exception {
+    public void connectUserControllerTest() throws Exception {   // KO TODO
 
-        User user = new User();
+        UserDto userMock = new UserDto(existingEmailTest,existingPasswordTest,existingFirstNameTest,existingLastNameTest);
 
         ObjectMapper obm = new ObjectMapper();
         ObjectNode jsonUser = obm.createObjectNode();
 
         // GIVEN
 
+        Mockito.when(userService.connectUser(userMock)).thenReturn(true);
+
         jsonUser.set("email", TextNode.valueOf(existingEmailTest));
-        jsonUser.set("password", TextNode.valueOf(existingPasswordTest));
+        jsonUser.set("password", TextNode.valueOf(encoder.encode(existingPasswordTest)));
+       // jsonUser.set("password", TextNode.valueOf(existingPasswordTest));
 
         // WHEN
         // THEN
