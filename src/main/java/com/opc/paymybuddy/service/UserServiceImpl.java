@@ -5,6 +5,7 @@ import com.opc.paymybuddy.dto.UserDto;
 import com.opc.paymybuddy.model.User;
 import com.opc.paymybuddy.web.exceptions.DataMissingException;
 import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
+import com.opc.paymybuddy.web.exceptions.DataNotExistException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -121,9 +123,34 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    @Override
+    public boolean addBuddy(UserDto newBuddy, Integer userIdToAttached) throws Exception {
+        if (newBuddy.getEmail().isEmpty()) {
+            logger.error("inscription : KO");
+            throw new DataMissingException("Inscription failed : email is required !!");
+        }
+        if (newBuddy.getFirstName().isEmpty()) {
+            logger.error("inscription : KO");
+            throw new DataMissingException("Inscription failed : firstname is required !!");
+        }
+        if (newBuddy.getLastName().isEmpty()) {
+            logger.error("inscription : KO");
+            throw new DataMissingException("Inscription failed : lastname is required !!");
+        }
+        if (newBuddy.getPassword().isEmpty()) {
+            logger.error("inscription : KO");
+            throw new DataMissingException("Inscription failed : password is required !!");
+        }
 
-/* public User addBuddy(User newBuddy) {
-        return null;
+        Optional<User> userRegistered = userDao.findById(userIdToAttached);
+        if (userRegistered.isPresent()){
+            return true;
+        }
+        else {
+            String mess = String.format("Creation buddy failed : user %s not exist !!", userIdToAttached);
+            logger.info(mess);
+            throw new DataNotExistException(mess);
+        }
+
     }
-*/
 }

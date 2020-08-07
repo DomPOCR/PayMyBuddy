@@ -1,6 +1,7 @@
             package com.opc.paymybuddy.web.controller;
 
 import com.opc.paymybuddy.dto.UserDto;
+import com.opc.paymybuddy.model.BankAccount;
 import com.opc.paymybuddy.model.User;
 import com.opc.paymybuddy.service.UserService;
 import com.opc.paymybuddy.web.exceptions.DataNotExistException;
@@ -58,8 +59,18 @@ public class UserController {
 
         userService.addUser(addUser);
 
-        logger.info("Add User for userid OK" + addUser.toString());
+        logger.info("Add User for userid OK " + addUser.toString());
         return new ResponseEntity(addUser, HttpStatus.CREATED);
+    }
+
+    // Ajout d'un buddy
+    @PostMapping("/AddBuddy/{userId}")
+    public ResponseEntity <UserDto> AddBuddy(@RequestBody UserDto addBuddy, @PathVariable Integer userId ) throws Exception {
+
+        userService.addBuddy(addBuddy,userId);
+
+        logger.info("Add buddy for userid " + userId + " OK " + addBuddy.toString());
+        return new ResponseEntity(addBuddy, HttpStatus.OK);
     }
 
     // Connect
