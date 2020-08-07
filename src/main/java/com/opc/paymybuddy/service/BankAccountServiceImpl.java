@@ -55,33 +55,31 @@ public class BankAccountServiceImpl implements BankAccountService {
         BankAccount bankAccount = new BankAccount(addAccount.getIban(), addAccount.getBic(), addAccount.getBankName(), addAccount.getAccountName(),addAccount.getUser());
         Optional<User> userBank = userDao.findById(userId);
 
-        /*
-        if (userBank.isPresent()) {
 
+        if (userBank.isPresent()) {
             bankAccount.setUser(userBank.get());
             bankAccountDao.save(bankAccount);
-
             return bankAccount;
         } else {
             String mess = String.format("Creation failed : user %s not exist !!", userId);
             logger.info(mess);
             throw new DataNotExistException(mess);
         }
-        */
+
         /* Equivalent en fonction Lambda */
 
-        bankAccount.setUser(userBank.<DataNotExistException>orElseThrow(() -> {
+//        bankAccount.setUser(userBank.<DataNotExistException>orElseThrow(() -> {
+//
+//            String mess = String.format("Creation failed : user %s not exist !!", userId);
+//            logger.info(mess);
+//            throw new DataNotExistException(mess);
+//
+//        }));
 
-            String mess = String.format("Creation failed : user %s not exist !!", userId);
-            logger.info(mess);
-            throw new DataNotExistException(mess);
 
-        }));
+        //bankAccountDao.save(bankAccount);
 
-
-        bankAccountDao.save(bankAccount);
-
-        return bankAccount;
+       // return bankAccount;
 
     }
 }
