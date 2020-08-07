@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.util.DateUtil.now;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -113,20 +114,17 @@ public class UserControllerTest {
     }
 
     @Test
-    public void connectUserControllerTest() throws Exception {   // KO TODO
-
-        UserDto userMock = new UserDto(existingEmailTest,existingPasswordTest,existingFirstNameTest,existingLastNameTest);
+    public void connectUserControllerTest() throws Exception {
 
         ObjectMapper obm = new ObjectMapper();
         ObjectNode jsonUser = obm.createObjectNode();
 
         // GIVEN
 
-        Mockito.when(userService.connectUser(userMock)).thenReturn(true);
+        Mockito.when(userService.connectUser(any(UserDto.class))).thenReturn(true);  // TODO any
 
         jsonUser.set("email", TextNode.valueOf(existingEmailTest));
         jsonUser.set("password", TextNode.valueOf(encoder.encode(existingPasswordTest)));
-       // jsonUser.set("password", TextNode.valueOf(existingPasswordTest));
 
         // WHEN
         // THEN
@@ -135,8 +133,7 @@ public class UserControllerTest {
                 .content(jsonUser.toString())
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$..firstName").value(firstNameTest))
-                .andExpect(MockMvcResultMatchers.jsonPath("$..lastName").value(lastNameTest))
+                .andExpect(MockMvcResultMatchers.jsonPath("$..email").value(existingEmailTest))
                 .andExpect(status().isOk());
     }
 

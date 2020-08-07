@@ -65,6 +65,16 @@ public class User {
         this.createDate = createDate;
     }
 
+    public User(@NotNull Integer id, @NotNull String lastname, @NotNull String firstname, @Email @NotNull String email, @NotNull String password, @NotNull BigDecimal balance, @NotNull Date createDate) {
+        this.id = id;
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.email = email;
+        this.password = password;
+        this.balance = balance;
+        this.createDate = createDate;
+    }
+
     public Integer getId() {
         return id;
     }

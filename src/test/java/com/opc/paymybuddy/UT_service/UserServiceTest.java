@@ -37,7 +37,7 @@ public class UserServiceTest {
     UserService userServiceTest;
 
     @MockBean
-    UserDao userDao;
+    UserDao userDaoMock;
 
     @Test
     public void addUserWithNoExistingEmailTest() throws Exception {
@@ -54,7 +54,7 @@ public class UserServiceTest {
         UserDto userDtoTest = new UserDto(emailTest, passwordTest, firstNameTest, lastNameTest);
 
         // WHEN
-        Mockito.when(userDao.existsByEmail(emailTest)).thenReturn(Boolean.FALSE);
+        Mockito.when(userDaoMock.existsByEmail(emailTest)).thenReturn(Boolean.FALSE);
 
         // THEN
         Assertions.assertTrue(userServiceTest.addUser(userDtoTest));
@@ -77,7 +77,7 @@ public class UserServiceTest {
         UserDto userDtoTest = new UserDto(emailTest, passwordTest, firstNameTest, lastNameTest);
 
         // WHEN
-        Mockito.when(userDao.existsByEmail(emailTest)).thenReturn(Boolean.TRUE);
+        Mockito.when(userDaoMock.existsByEmail(emailTest)).thenReturn(Boolean.TRUE);
 
         // THEN
         try {
