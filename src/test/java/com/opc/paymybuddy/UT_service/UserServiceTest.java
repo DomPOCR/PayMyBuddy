@@ -58,8 +58,8 @@ public class UserServiceTest {
 
         // THEN
         Assertions.assertTrue(userServiceTest.addUser(userDtoTest));
-        assert (userDtoTest.getLastName().equals(lastNameTest));
-        assert (userDtoTest.getFirstName().equals(firstNameTest));
+        assert (userDtoTest.getLastname().equals(lastNameTest));
+        assert (userDtoTest.getFirstname().equals(firstNameTest));
     }
 
     @Test

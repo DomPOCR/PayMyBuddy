@@ -12,15 +12,15 @@ public class Relation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name="owner", foreignKey = @ForeignKey(name = "fk_relation_owner"))
+    @JoinColumn(name = "owner", foreignKey = @ForeignKey(name = "fk_relation_owner"))
     private User owner;
 
     @ManyToOne
-    @JoinColumn(name="buddy", foreignKey = @ForeignKey(name = "fk_relation_buddy"))
+    @JoinColumn(name = "buddy", foreignKey = @ForeignKey(name = "fk_relation_buddy"))
     private User buddy;
 
     @Override
@@ -32,6 +32,15 @@ public class Relation {
                 '}';
     }
 
+    public Relation() {
+        super();
+    }
+
+    public Relation(Integer id, User owner, User buddy) {
+        this.id = id;
+        this.owner = owner;
+        this.buddy = buddy;
+    }
 
     public Integer getId() {
         return id;
@@ -62,10 +71,11 @@ public class Relation {
 
     @JsonProperty("buddy")
     public String getBuddyDetail() {
-        return toString(); //DP
+        return toString();
     }
 
     public void setBuddy(User buddy) {
         this.buddy = buddy;
     }
 }
+

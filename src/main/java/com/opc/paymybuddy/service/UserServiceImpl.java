@@ -2,10 +2,12 @@ package com.opc.paymybuddy.service;
 
 import com.opc.paymybuddy.dao.UserDao;
 import com.opc.paymybuddy.dto.UserDto;
+import com.opc.paymybuddy.model.Relation;
 import com.opc.paymybuddy.model.User;
 import com.opc.paymybuddy.web.exceptions.DataMissingException;
 import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
 import com.opc.paymybuddy.web.exceptions.DataNotExistException;
+import com.sun.xml.bind.v2.TODO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,11 +63,11 @@ public class UserServiceImpl implements UserService {
             logger.error("inscription : KO");
             throw new DataMissingException("Inscription failed : email is required !!");
         }
-        if (addUser.getFirstName().isEmpty()) {
+        if (addUser.getFirstname().isEmpty()) {
             logger.error("inscription : KO");
             throw new DataMissingException("Inscription failed : firstname is required !!");
         }
-        if (addUser.getLastName().isEmpty()) {
+        if (addUser.getLastname().isEmpty()) {
             logger.error("inscription : KO");
             throw new DataMissingException("Inscription failed : lastname is required !!");
         }
@@ -84,8 +86,8 @@ public class UserServiceImpl implements UserService {
 
         }
         user.setEmail(addUser.getEmail());
-        user.setFirstname(addUser.getFirstName());
-        user.setLastname(addUser.getLastName());
+        user.setFirstname(addUser.getFirstname());
+        user.setLastname(addUser.getLastname());
         user.setPassword(encoder.encode(addUser.getPassword()));
         user.setBalance(BigDecimal.ZERO);
 
@@ -115,8 +117,8 @@ public class UserServiceImpl implements UserService {
             String pwd2 = userRegistered.getPassword();
 
             if (encoder.matches(pwd1,pwd2)) {
-                userToConnect.setFirstName(userRegistered.getFirstname());
-                userToConnect.setLastName(userRegistered.getLastname());
+                userToConnect.setFirstname(userRegistered.getFirstname());
+                userToConnect.setLastname(userRegistered.getLastname());
                 return true;
             }
         }
@@ -124,16 +126,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean addBuddy(UserDto newBuddy, Integer userIdToAttached) throws Exception {
+    public boolean addBuddy(User newBuddy, Integer userIdToAttached) throws Exception {
         if (newBuddy.getEmail().isEmpty()) {
             logger.error("inscription : KO");
             throw new DataMissingException("Inscription failed : email is required !!");
         }
-        if (newBuddy.getFirstName().isEmpty()) {
+        if (newBuddy.getFirstname().isEmpty()) {
             logger.error("inscription : KO");
             throw new DataMissingException("Inscription failed : firstname is required !!");
         }
-        if (newBuddy.getLastName().isEmpty()) {
+        if (newBuddy.getLastname().isEmpty()) {
             logger.error("inscription : KO");
             throw new DataMissingException("Inscription failed : lastname is required !!");
         }
@@ -144,6 +146,10 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> userRegistered = userDao.findById(userIdToAttached);
         if (userRegistered.isPresent()){
+            Relation userRegisteredRelation = new Relation(0,userRegistered.get(),newBuddy); // TODO
+
+            //userDao.save(newBuddy);
+            //userDao.save(userRegistered);
             return true;
         }
         else {

@@ -121,7 +121,7 @@ public class UserControllerTest {
 
         // GIVEN
 
-        Mockito.when(userService.connectUser(any(UserDto.class))).thenReturn(true);  // TODO any
+        Mockito.when(userService.connectUser(any(UserDto.class))).thenReturn(true);
 
         jsonUser.set("email", TextNode.valueOf(existingEmailTest));
         jsonUser.set("password", TextNode.valueOf(encoder.encode(existingPasswordTest)));

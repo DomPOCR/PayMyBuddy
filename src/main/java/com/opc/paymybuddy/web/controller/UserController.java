@@ -65,7 +65,8 @@ public class UserController {
 
     // Ajout d'un buddy
     @PostMapping("/AddBuddy/{userId}")
-    public ResponseEntity <UserDto> AddBuddy(@RequestBody UserDto addBuddy, @PathVariable Integer userId ) throws Exception {
+    //public ResponseEntity <UserDto> AddBuddy(@RequestBody UserDto addBuddy, @PathVariable Integer userId ) throws Exception {
+    public ResponseEntity <User> AddBuddy(@RequestBody User addBuddy, @PathVariable Integer userId ) throws Exception {
 
         userService.addBuddy(addBuddy,userId);
 
