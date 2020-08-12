@@ -4,6 +4,7 @@ import com.opc.paymybuddy.model.BankAccount;
 import com.opc.paymybuddy.service.BankAccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,6 @@ public class BankAccountController {
 
     // Pour le log4j2
     final Logger logger = LogManager.getLogger(this.getClass().getName());
-
 
     // Liste des comptes
 

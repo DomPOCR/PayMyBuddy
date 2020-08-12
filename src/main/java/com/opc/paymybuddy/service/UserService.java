@@ -16,12 +16,6 @@ public interface UserService {
     boolean addUser(UserDto newUser) throws Exception;
     boolean connectUser(UserDto userDto) throws Exception;
 
-    boolean addBuddy(User newBuddy, Integer userId) throws Exception;
+    User addBuddy(User newBuddy, Integer userId) throws Exception;
 
-
-
-     /*
-    public List<User> findBuddyByUser(User relation);
-    public User addBuddy(User newBuddy);
-*/
 }

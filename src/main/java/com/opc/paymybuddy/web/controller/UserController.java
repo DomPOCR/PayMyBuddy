@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.logging.FileHandler;
 
-            @RestController
-//@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE) // Indique que l'API consomme du JSON
+@RestController
 public class UserController {
 
     @Autowired
@@ -26,7 +25,7 @@ public class UserController {
     // Pour le log4j2
     final Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    // Liste des users
+   // Liste des users
 
     @GetMapping(value = "/Users")
     @ResponseStatus(HttpStatus.OK)
@@ -64,6 +63,7 @@ public class UserController {
     }
 
     // Ajout d'un buddy
+    // champs requis : email d'un user enregistré
     @PostMapping("/AddBuddy/{userId}")
     //public ResponseEntity <UserDto> AddBuddy(@RequestBody UserDto addBuddy, @PathVariable Integer userId ) throws Exception {
     public ResponseEntity <User> AddBuddy(@RequestBody User addBuddy, @PathVariable Integer userId ) throws Exception {

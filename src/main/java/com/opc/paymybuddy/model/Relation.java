@@ -23,6 +23,8 @@ public class Relation {
     @JoinColumn(name = "buddy", foreignKey = @ForeignKey(name = "fk_relation_buddy"))
     private User buddy;
 
+
+
     @Override
     public String toString() {
         return "Relation{" +
@@ -36,8 +38,7 @@ public class Relation {
         super();
     }
 
-    public Relation(Integer id, User owner, User buddy) {
-        this.id = id;
+    public Relation(User owner, User buddy) {
         this.owner = owner;
         this.buddy = buddy;
     }

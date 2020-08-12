@@ -1,13 +1,13 @@
 package com.opc.paymybuddy.service;
 
+import com.opc.paymybuddy.dao.RelationDao;
 import com.opc.paymybuddy.dao.UserDao;
 import com.opc.paymybuddy.dto.UserDto;
 import com.opc.paymybuddy.model.Relation;
 import com.opc.paymybuddy.model.User;
-import com.opc.paymybuddy.web.exceptions.DataMissingException;
 import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
+import com.opc.paymybuddy.web.exceptions.DataMissingException;
 import com.opc.paymybuddy.web.exceptions.DataNotExistException;
-import com.sun.xml.bind.v2.TODO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    RelationDao relationDao;
 
     // Encrypt password
     static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
@@ -59,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
 
-       if (addUser.getEmail().isEmpty()) {
+        if (addUser.getEmail().isEmpty()) {
             logger.error("inscription : KO");
             throw new DataMissingException("Inscription failed : email is required !!");
         }
@@ -78,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
         if (userDao.existsByEmail(addUser.getEmail())) {
 
-            String mess= String.format("Inscription failed : this mail %s is already exist !!", addUser.getEmail());
+            String mess = String.format("Inscription failed : this mail %s is already exist !!", addUser.getEmail());
 
             logger.info(mess);
 
@@ -116,7 +119,7 @@ public class UserServiceImpl implements UserService {
             String pwd1 = userToConnect.getPassword();
             String pwd2 = userRegistered.getPassword();
 
-            if (encoder.matches(pwd1,pwd2)) {
+            if (encoder.matches(pwd1, pwd2)) {
                 userToConnect.setFirstname(userRegistered.getFirstname());
                 userToConnect.setLastname(userRegistered.getLastname());
                 return true;
@@ -126,36 +129,52 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean addBuddy(User newBuddy, Integer userIdToAttached) throws Exception {
+    public User addBuddy(User newBuddy, Integer userIdToUpdate) throws Exception {
+
         if (newBuddy.getEmail().isEmpty()) {
             logger.error("inscription : KO");
             throw new DataMissingException("Inscription failed : email is required !!");
         }
-        if (newBuddy.getFirstname().isEmpty()) {
-            logger.error("inscription : KO");
-            throw new DataMissingException("Inscription failed : firstname is required !!");
-        }
-        if (newBuddy.getLastname().isEmpty()) {
-            logger.error("inscription : KO");
-            throw new DataMissingException("Inscription failed : lastname is required !!");
-        }
-        if (newBuddy.getPassword().isEmpty()) {
-            logger.error("inscription : KO");
-            throw new DataMissingException("Inscription failed : password is required !!");
-        }
 
-        Optional<User> userRegistered = userDao.findById(userIdToAttached);
-        if (userRegistered.isPresent()){
-            Relation userRegisteredRelation = new Relation(0,userRegistered.get(),newBuddy); // TODO
+        if (userDao.existsByEmail(newBuddy.getEmail())) {
 
-            //userDao.save(newBuddy);
-            //userDao.save(userRegistered);
-            return true;
-        }
-        else {
-            String mess = String.format("Creation buddy failed : user %s not exist !!", userIdToAttached);
+            Optional<User> buddyToAdd = Optional.ofNullable(userDao.findByEmail(newBuddy.getEmail()));
+            Optional<User> userToUpdate = userDao.findById(userIdToUpdate);
+
+            if (userToUpdate.isPresent()) {
+
+                newBuddy.setId(buddyToAdd.get().getId());
+                newBuddy.setLastname(buddyToAdd.get().getLastname());
+                newBuddy.setFirstname(buddyToAdd.get().getFirstname());
+                newBuddy.setPassword(buddyToAdd.get().getPassword());
+                newBuddy.setBalance(buddyToAdd.get().getBalance());
+                newBuddy.setCreateDate(buddyToAdd.get().getCreateDate());
+                newBuddy.setListBankAccounts(buddyToAdd.get().getListBankAccounts());
+                newBuddy.setListRelations(buddyToAdd.get().getListRelations());
+
+                Relation userToAddRelation = new Relation(userToUpdate.get(), newBuddy);
+
+                // Test buddy inexistant
+                if (!userToUpdate.get().getListRelations().contains(userToAddRelation)){
+
+                    List<Relation> listRelation = new ArrayList();
+                    listRelation.add(userToAddRelation);
+                    userToUpdate.get().setListRelations(listRelation);
+
+                }
+                relationDao.save(userToAddRelation);
+                userDao.save(userToUpdate.get());
+                return newBuddy;
+
+            } else {
+                String mess = String.format("Creation buddy failed : user %s does not exist !!", userIdToUpdate);
+                logger.info(mess);
+                throw new DataNotExistException(mess);
+            }
+        } else {
+            String mess = String.format("Add buddy failed : this email %s does not exist !!", newBuddy.getEmail());
             logger.info(mess);
-            throw new DataNotExistException(mess);
+            throw new DataAlreadyExistException(mess);
         }
 
     }
