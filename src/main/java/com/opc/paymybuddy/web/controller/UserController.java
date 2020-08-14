@@ -68,10 +68,10 @@ public class UserController {
     //public ResponseEntity <UserDto> AddBuddy(@RequestBody UserDto addBuddy, @PathVariable Integer userId ) throws Exception {
     public ResponseEntity <User> AddBuddy(@RequestBody User addBuddy, @PathVariable Integer userId ) throws Exception {
 
-        userService.addBuddy(addBuddy,userId);
+        User userUpdated = userService.addBuddy(addBuddy.getEmail(),userId);
 
-        logger.info("Add buddy for userid " + userId + " OK " + addBuddy.toString());
-        return new ResponseEntity(addBuddy, HttpStatus.OK);
+        logger.info("Add buddy for userid " + userId + " OK " + userUpdated.toString());
+        return new ResponseEntity(userUpdated, HttpStatus.OK);
     }
 
     // Connect

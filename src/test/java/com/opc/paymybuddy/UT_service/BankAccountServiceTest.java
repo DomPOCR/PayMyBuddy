@@ -29,6 +29,15 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(SpringExtension.class)
 public class BankAccountServiceTest {
 
+    @TestConfiguration
+    static class BankAccountTestsContextConfiguration {
+
+        @Bean
+        public BankAccountService userService() {
+            return new BankAccountServiceImpl();
+        }
+    }
+
     @Autowired
     BankAccountService bankAccountService;
     @MockBean
@@ -202,12 +211,5 @@ public class BankAccountServiceTest {
         }
     }
 
-    @TestConfiguration
-    static class BankAccountTestsContextConfiguration {
 
-        @Bean
-        public BankAccountService userService() {
-            return new BankAccountServiceImpl();
-        }
-    }
 }

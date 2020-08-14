@@ -53,6 +53,9 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         return userDao.findByEmail(email);
     }
+    /* ---------------------------------------------------------------------------- */
+    /*                                AddUser                                       */
+    /* ---------------------------------------------------------------------------- */
 
     @Override
     public boolean addUser(UserDto addUser) throws Exception {
@@ -101,6 +104,9 @@ public class UserServiceImpl implements UserService {
         logger.info("Add user OK " + addUser.toString());
         return true;
     }
+    /* ---------------------------------------------------------------------------- */
+    /*                                ConnectUser                                   */
+    /* ---------------------------------------------------------------------------- */
 
     @Override
     public boolean connectUser(UserDto userToConnect) throws Exception {
@@ -127,32 +133,27 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+    /* ---------------------------------------------------------------------------- */
+    /*                                AddBuddy                                      */
+    /* ---------------------------------------------------------------------------- */
 
     @Override
-    public User addBuddy(User newBuddy, Integer userIdToUpdate) throws Exception {
+    public User addBuddy(String email , Integer userIdToUpdate) throws Exception {
 
-        if (newBuddy.getEmail().isEmpty()) {
+        if (email.isEmpty()) {
             logger.error("inscription : KO");
             throw new DataMissingException("Inscription failed : email is required !!");
         }
 
-        if (userDao.existsByEmail(newBuddy.getEmail())) {
+       User buddyToAdd = userDao.findByEmail(email);
 
-            Optional<User> buddyToAdd = Optional.ofNullable(userDao.findByEmail(newBuddy.getEmail()));
+        if (buddyToAdd != null) {
+
             Optional<User> userToUpdate = userDao.findById(userIdToUpdate);
 
             if (userToUpdate.isPresent()) {
 
-                newBuddy.setId(buddyToAdd.get().getId());
-                newBuddy.setLastname(buddyToAdd.get().getLastname());
-                newBuddy.setFirstname(buddyToAdd.get().getFirstname());
-                newBuddy.setPassword(buddyToAdd.get().getPassword());
-                newBuddy.setBalance(buddyToAdd.get().getBalance());
-                newBuddy.setCreateDate(buddyToAdd.get().getCreateDate());
-                newBuddy.setListBankAccounts(buddyToAdd.get().getListBankAccounts());
-                newBuddy.setListRelations(buddyToAdd.get().getListRelations());
-
-                Relation userToAddRelation = new Relation(userToUpdate.get(), newBuddy);
+               Relation userToAddRelation = new Relation(userToUpdate.get(), buddyToAdd);
 
                 // Test buddy inexistant
                 if (!userToUpdate.get().getListRelations().contains(userToAddRelation)){
@@ -160,11 +161,15 @@ public class UserServiceImpl implements UserService {
                     List<Relation> listRelation = new ArrayList();
                     listRelation.add(userToAddRelation);
                     userToUpdate.get().setListRelations(listRelation);
-
+                    relationDao.save(userToAddRelation);
+                    userDao.save(userToUpdate.get());
+                    return userToUpdate.get();
                 }
-                relationDao.save(userToAddRelation);
-                userDao.save(userToUpdate.get());
-                return newBuddy;
+                else {
+                    String mess = String.format("Add buddy failed : this buddy %s already exist for this user !!", email);
+                    logger.info(mess);
+                    throw new DataAlreadyExistException(mess);
+                }
 
             } else {
                 String mess = String.format("Creation buddy failed : user %s does not exist !!", userIdToUpdate);
@@ -172,9 +177,9 @@ public class UserServiceImpl implements UserService {
                 throw new DataNotExistException(mess);
             }
         } else {
-            String mess = String.format("Add buddy failed : this email %s does not exist !!", newBuddy.getEmail());
+            String mess = String.format("Add buddy failed : this email %s does not exist !!", email);
             logger.info(mess);
-            throw new DataAlreadyExistException(mess);
+            throw new DataNotExistException(mess);
         }
 
     }

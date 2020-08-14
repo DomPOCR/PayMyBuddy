@@ -13,6 +13,7 @@ public class Relation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonIgnore
     private Integer id;
 
     @ManyToOne
@@ -23,14 +24,11 @@ public class Relation {
     @JoinColumn(name = "buddy", foreignKey = @ForeignKey(name = "fk_relation_buddy"))
     private User buddy;
 
-
-
     @Override
     public String toString() {
-        return "Relation{" +
-                "id=" + id +
-                ", owner=" + owner.getLastname() + " " + owner.getFirstname() +
-                ", buddy=" + buddy.getLastname() + " " + buddy.getFirstname() +
+        return  "Relation {" +
+                "  owner=" + owner.getId() + " " + owner.getLastname() + " " + owner.getFirstname() +
+                ", buddy=" + buddy.getId() + " " + buddy.getLastname() + " " + buddy.getFirstname() +
                 '}';
     }
 

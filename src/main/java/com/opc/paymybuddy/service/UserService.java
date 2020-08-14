@@ -16,6 +16,6 @@ public interface UserService {
     boolean addUser(UserDto newUser) throws Exception;
     boolean connectUser(UserDto userDto) throws Exception;
 
-    User addBuddy(User newBuddy, Integer userId) throws Exception;
+    User addBuddy(String email, Integer userId) throws Exception;
 
 }

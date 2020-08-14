@@ -1,6 +1,8 @@
 package com.opc.paymybuddy.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +37,7 @@ public class User {
 
     @Column(name = "password", length = 255)
     @NotNull
+    @JsonIgnore
     private String password;
 
     @Column(name = "balance", columnDefinition = "Decimal(9,2)")
