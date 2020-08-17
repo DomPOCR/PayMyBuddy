@@ -9,18 +9,11 @@ import com.opc.paymybuddy.service.UserService;
 import com.opc.paymybuddy.service.UserServiceImpl;
 import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
 import com.opc.paymybuddy.web.exceptions.DataMissingException;
-
 import com.opc.paymybuddy.web.exceptions.DataNotExistException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.mockito.Mockito;
-
-import static org.assertj.core.util.DateUtil.now;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,6 +26,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.util.DateUtil.now;
+import static org.mockito.ArgumentMatchers.any;
 
 
 @ExtendWith(SpringExtension.class)
@@ -83,7 +79,7 @@ public class UserServiceTest {
 
         // THEN
         Assertions.assertTrue(userServiceTest.addUser(userDtoTest));
-       
+
         assert (userDtoTest.getLastname().equals(lastNameTest));
         assert (userDtoTest.getFirstname().equals(firstNameTest));
     }
@@ -117,7 +113,7 @@ public class UserServiceTest {
     /*                                ConnectUser                                   */
     /* ---------------------------------------------------------------------------- */
 
-    @Test // Cas passant                                            TODO KO mock encode ??
+    @Test // Cas passant
     public void connectUserWithExistingEmail() throws Exception {
 
         // GIVEN
@@ -127,13 +123,13 @@ public class UserServiceTest {
         String lastNameTest = "Bauer";
         String firstNameTest = "Jack";
         String emailTest = "jb@email.com";
-       // String passwordTest = encoder.encode("mpd2");
+        // String passwordTest = encoder.encode("mpd2");
         String passwordTest = "mpd2";
         BigDecimal balanceTest = BigDecimal.valueOf(0);
         Date createDate = now();
 
         UserDto userDtoTest = new UserDto(emailTest, passwordTest, firstNameTest, lastNameTest);
-        User userRegistered = new User(firstNameTest,lastNameTest,emailTest,encoder.encode(passwordTest),balanceTest,createDate);
+        User userRegistered = new User(firstNameTest, lastNameTest, emailTest, encoder.encode(passwordTest), balanceTest, createDate);
 
         // WHEN
 
@@ -205,19 +201,20 @@ public class UserServiceTest {
         // Constantes pour le jeu de test
         String lastNameTest = "NomTest01";
         String firstNameTest = "PrenomTest01";
-        String emailTest = "jb@email.com";
+        String emailUserTest = "jb@email.com";
+        String emailBuddyTest = "Test@email.com";
         String passwordTest = "pwd01";
         BigDecimal balanceTest = BigDecimal.valueOf(0);
         Date createDate = now();
 
 
         // WHEN
-        User buddyToAdd = new User(firstNameTest,lastNameTest,emailTest,passwordTest,balanceTest,createDate);
-        User userTest = new User(firstNameTest,lastNameTest,emailTest,passwordTest,balanceTest,createDate);
+        User buddyToAdd = new User(firstNameTest, lastNameTest, emailBuddyTest, passwordTest, balanceTest, createDate);
+
+        User userTest = new User(firstNameTest, lastNameTest, emailUserTest, passwordTest, balanceTest, createDate);
         List<Relation> relationList = new ArrayList<>();
 
         Relation userToAddRelation = new Relation(userTest, buddyToAdd);
-        relationList.add(userToAddRelation);
 
         userTest.setListRelations(relationList);
 
@@ -227,7 +224,7 @@ public class UserServiceTest {
         Mockito.when(userDaoMock.save(any(User.class))).thenReturn(buddyToAdd);
         Mockito.when(relationDaoMock.save(any(Relation.class))).thenReturn(userToAddRelation);
 
-        User userToUpdate = userServiceTest.addBuddy(buddyToAdd.getEmail(),1);
+        User userToUpdate = userServiceTest.addBuddy(buddyToAdd.getEmail(), 1);
 
         // THEN
 
@@ -235,7 +232,7 @@ public class UserServiceTest {
 
     }
 
-    @Test // Cas non passant                                TODO NULL POINTER
+    @Test // Cas non passant
     public void addBuddyToNonExistingUserTest() throws Exception {
 
         // GIVEN
@@ -250,8 +247,8 @@ public class UserServiceTest {
 
 
         // WHEN
-        User buddyToAdd = new User(firstNameTest,lastNameTest,emailTest,passwordTest,balanceTest,createDate);
-        User userTest = new User(firstNameTest,lastNameTest,emailTest,passwordTest,balanceTest,createDate);
+        User buddyToAdd = new User(firstNameTest, lastNameTest, emailTest, passwordTest, balanceTest, createDate);
+        User userTest = new User(firstNameTest, lastNameTest, emailTest, passwordTest, balanceTest, createDate);
 
         Mockito.when(userDaoMock.findByEmail((any(String.class)))).thenReturn(buddyToAdd);
         Mockito.when(userDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
@@ -260,8 +257,8 @@ public class UserServiceTest {
 
         // THEN
         try {
-            userServiceTest.addBuddy(buddyToAdd.getEmail(),9999);
-        }catch (
+            userServiceTest.addBuddy(buddyToAdd.getEmail(), 9999);
+        } catch (
                 DataNotExistException eExp) {
             assert (eExp.getMessage().contains("user 9999 does not exist"));
         }
@@ -282,16 +279,50 @@ public class UserServiceTest {
 
 
         // WHEN
-        User userTest = new User(firstNameTest,lastNameTest,emailTest,passwordTest,balanceTest,createDate);
+        User userTest = new User(firstNameTest, lastNameTest, emailTest, passwordTest, balanceTest, createDate);
 
         // THEN
         try {
-            userServiceTest.addBuddy(userTest.getEmail(),1);
-        }catch (
+            userServiceTest.addBuddy(userTest.getEmail(), 1);
+        } catch (
                 DataMissingException eExp) {
             assert (eExp.getMessage().contains("email is required"));
         }
     }
 
+    @Test // Cas non passant
+    public void addBuddyWithExistingEmailToExistingUserTest() throws Exception {
 
+        // GIVEN
+
+        // Constantes pour le jeu de test
+        String lastNameTest = "NomTest01";
+        String firstNameTest = "PrenomTest01";
+        String emailTest = "jb@email.com";
+        String passwordTest = "pwd01";
+        BigDecimal balanceTest = BigDecimal.valueOf(0);
+        Date createDate = now();
+
+
+        // WHEN
+        User buddyToAdd = new User(firstNameTest, lastNameTest, emailTest, passwordTest, balanceTest, createDate);
+        User userTest = new User(firstNameTest, lastNameTest, emailTest, passwordTest, balanceTest, createDate);
+        List<Relation> relationList = new ArrayList<>();
+
+        Relation userToAddRelation = new Relation(userTest, buddyToAdd);
+        relationList.add(userToAddRelation);
+
+        userTest.setListRelations(relationList);
+
+        Mockito.when(userDaoMock.findByEmail((any(String.class)))).thenReturn(buddyToAdd);
+        Mockito.when(userDaoMock.findById(any(Integer.class))).thenReturn(Optional.of(userTest));
+
+        // THEN
+        try {
+            userServiceTest.addBuddy(userTest.getEmail(), 1);
+        } catch (
+                DataAlreadyExistException eExp) {
+            assert (eExp.getMessage().contains("already exist for this user"));
+        }
+    }
 }

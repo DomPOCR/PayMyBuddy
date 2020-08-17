@@ -138,14 +138,14 @@ public class UserServiceImpl implements UserService {
     /* ---------------------------------------------------------------------------- */
 
     @Override
-    public User addBuddy(String email , Integer userIdToUpdate) throws Exception {
+    public User addBuddy(String email, Integer userIdToUpdate) throws Exception {
 
         if (email.isEmpty()) {
             logger.error("inscription : KO");
             throw new DataMissingException("Inscription failed : email is required !!");
         }
 
-       User buddyToAdd = userDao.findByEmail(email);
+        User buddyToAdd = userDao.findByEmail(email);
 
         if (buddyToAdd != null) {
 
@@ -153,10 +153,9 @@ public class UserServiceImpl implements UserService {
 
             if (userToUpdate.isPresent()) {
 
-               Relation userToAddRelation = new Relation(userToUpdate.get(), buddyToAdd);
+                Relation userToAddRelation = new Relation(userToUpdate.get(), buddyToAdd);
 
-                // Test buddy inexistant
-                if (!userToUpdate.get().getListRelations().contains(userToAddRelation)){
+                if (!userToUpdate.get().getListRelations().contains(userToAddRelation)) {
 
                     List<Relation> listRelation = new ArrayList();
                     listRelation.add(userToAddRelation);
@@ -164,8 +163,7 @@ public class UserServiceImpl implements UserService {
                     relationDao.save(userToAddRelation);
                     userDao.save(userToUpdate.get());
                     return userToUpdate.get();
-                }
-                else {
+                } else {
                     String mess = String.format("Add buddy failed : this buddy %s already exist for this user !!", email);
                     logger.info(mess);
                     throw new DataAlreadyExistException(mess);

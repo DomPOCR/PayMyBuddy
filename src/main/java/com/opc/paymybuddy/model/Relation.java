@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "relation")
@@ -27,8 +28,8 @@ public class Relation {
     @Override
     public String toString() {
         return  "Relation {" +
-                "  owner=" + owner.getId() + " " + owner.getLastname() + " " + owner.getFirstname() +
-                ", buddy=" + buddy.getId() + " " + buddy.getLastname() + " " + buddy.getFirstname() +
+                "  owner=" + owner.getId() + " " + owner.getLastname() + " " + owner.getFirstname() + " " + owner.getEmail() +
+                ", buddy=" + buddy.getId() + " " + buddy.getLastname() + " " + buddy.getFirstname() + " " + buddy.getEmail() +
                 '}';
     }
 
@@ -43,6 +44,21 @@ public class Relation {
 
     public Integer getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Relation relation = (Relation) o;
+        if (relation.id != null && this.id != null) return relation.id == this.id;
+        return Objects.equals(owner, relation.owner) &&
+                Objects.equals(buddy, relation.buddy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(owner, buddy);
     }
 
     public void setId(Integer id) {

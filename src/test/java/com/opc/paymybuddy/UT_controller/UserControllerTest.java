@@ -101,7 +101,7 @@ public class UserControllerTest {
         jsonUser.set("firstname", TextNode.valueOf(firstNameTest));
         jsonUser.set("lastname", TextNode.valueOf(lastNameTest));
 
-        // WHEN TODO
+        // WHEN
         // THEN
         mockMvc.perform(MockMvcRequestBuilders.post("/AddUser")
                 .contentType(MediaType.APPLICATION_JSON)
