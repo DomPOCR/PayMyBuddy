@@ -10,6 +10,7 @@ import com.opc.paymybuddy.service.UserServiceImpl;
 import com.opc.paymybuddy.web.exceptions.DataAlreadyExistException;
 import com.opc.paymybuddy.web.exceptions.DataMissingException;
 
+import com.opc.paymybuddy.web.exceptions.DataNotExistException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -253,7 +254,7 @@ public class UserServiceTest {
         User userTest = new User(firstNameTest,lastNameTest,emailTest,passwordTest,balanceTest,createDate);
 
         Mockito.when(userDaoMock.findByEmail((any(String.class)))).thenReturn(buddyToAdd);
-        Mockito.when(userDaoMock.findById(any(Integer.class))).thenReturn(null);
+        Mockito.when(userDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
         Mockito.when(userDaoMock.save(any(User.class))).thenReturn(buddyToAdd);
 
 
@@ -261,8 +262,8 @@ public class UserServiceTest {
         try {
             userServiceTest.addBuddy(buddyToAdd.getEmail(),9999);
         }catch (
-                DataMissingException eExp) {
-            assert (eExp.getMessage().contains("user does not exist"));
+                DataNotExistException eExp) {
+            assert (eExp.getMessage().contains("user 9999 does not exist"));
         }
     }
 
