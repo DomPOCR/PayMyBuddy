@@ -98,8 +98,8 @@ public class UserControllerTest {
 
         jsonUser.set("email", TextNode.valueOf(emailTest));
         jsonUser.set("password", TextNode.valueOf(passwordTest));
-        jsonUser.set("firstName", TextNode.valueOf(firstNameTest));
-        jsonUser.set("lastName", TextNode.valueOf(lastNameTest));
+        jsonUser.set("firstname", TextNode.valueOf(firstNameTest));
+        jsonUser.set("lastname", TextNode.valueOf(lastNameTest));
 
         // WHEN TODO
         // THEN
@@ -108,8 +108,8 @@ public class UserControllerTest {
                 .content(jsonUser.toString())
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$..firstName").value(firstNameTest))
-                .andExpect(MockMvcResultMatchers.jsonPath("$..lastName").value(lastNameTest))
+                .andExpect(MockMvcResultMatchers.jsonPath("$..firstname").value(firstNameTest))
+                .andExpect(MockMvcResultMatchers.jsonPath("$..lastname").value(lastNameTest))
                 .andExpect(status().isCreated());
     }
 
