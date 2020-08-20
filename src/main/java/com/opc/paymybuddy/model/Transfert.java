@@ -30,10 +30,6 @@ public class Transfert implements Serializable {
     @NotNull
     private Date transactionDate;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)  // Persistance en mode texte plutôt que position dans la liste
-    private TransfertStatus status;
-
 
 
     public Integer getId() {
@@ -68,12 +64,5 @@ public class Transfert implements Serializable {
         this.transactionDate = transactionDate;
     }
 
-    public TransfertStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TransfertStatus status) {
-        this.status = status;
-    }
 }
 

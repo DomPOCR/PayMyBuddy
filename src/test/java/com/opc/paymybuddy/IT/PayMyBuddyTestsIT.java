@@ -1,18 +1,21 @@
-package com.opc.paymybuddy;
+package com.opc.paymybuddy.IT;
 
 import com.opc.paymybuddy.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @SpringBootTest
-public class PayMyBuddyApplicationTests {
+public class PayMyBuddyTestsIT {
+	@Autowired
+	UserService userService;
 
 	@Test
-	void contextLoads() {
+	void MyTest() {
+		System.out.println(userService.count());
 
+		Assertions.assertTrue(true);
 	}
 
 }
