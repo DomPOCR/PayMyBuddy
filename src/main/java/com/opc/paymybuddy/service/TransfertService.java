@@ -4,9 +4,6 @@ import com.opc.paymybuddy.model.InternalTransfert;
 
 public interface TransfertService {
 
-    static InternalTransfert transfertBuddy(InternalTransfert transfertBuddy) {
+    void transfertBuddy(InternalTransfert transfertBuddy);
 
-        return null;
-
-    }
 }

@@ -26,7 +26,7 @@ public class TransfertController {
     @PostMapping(value = "/transfert/buddy")
     public ResponseEntity<InternalTransfert> transfertBuddy (@RequestBody InternalTransfert transfertBuddy) throws Exception{
 
-        InternalTransfert transactionBuddyResult = TransfertService.transfertBuddy(transfertBuddy);
+        //InternalTransfert transactionBuddyResult = TransfertService.transfertBuddy(transfertBuddy);
         return new ResponseEntity(transfertBuddy, HttpStatus.CREATED);
     }
 
