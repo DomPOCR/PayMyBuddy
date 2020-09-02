@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
 
                 if (buddyToAdd.getEmail() == userToUpdate.get().getEmail()){
 
-                    String mess = String.format("Add buddy failed : this buddy %s has the same mail as this user !!", email);
+                    String mess = String.format("Add buddy failed : this buddy %s has the same mail as the user to update (id %d )!!", email,userIdToUpdate);
                     logger.info(mess);
                     throw new DataAlreadyExistException(mess);
                 }
