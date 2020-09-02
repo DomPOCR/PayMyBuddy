@@ -291,7 +291,7 @@ public class UserServiceTest {
     }
 
     @Test // Cas non passant
-    public void addBuddyWithExistingEmailToExistingUserTest() throws Exception {
+    public void addBuddyWithSameEmailToExistingUserTest() throws Exception {
 
         // GIVEN
 
@@ -307,6 +307,43 @@ public class UserServiceTest {
         // WHEN
         User buddyToAdd = new User(firstNameTest, lastNameTest, emailTest, passwordTest, balanceTest, createDate);
         User userTest = new User(firstNameTest, lastNameTest, emailTest, passwordTest, balanceTest, createDate);
+        List<Relation> relationList = new ArrayList<>();
+
+        Relation userToAddRelation = new Relation(userTest, buddyToAdd);
+        relationList.add(userToAddRelation);
+
+        userTest.setListRelations(relationList);
+
+        Mockito.when(userDaoMock.findByEmail((any(String.class)))).thenReturn(buddyToAdd);
+        Mockito.when(userDaoMock.findById(any(Integer.class))).thenReturn(Optional.of(userTest));
+
+        // THEN
+        try {
+            userServiceTest.addBuddy(userTest.getEmail(), 1);
+        } catch (
+                DataAlreadyExistException eExp) {
+            assert (eExp.getMessage().contains("has the same mail as the user to update"));
+        }
+    }
+
+    @Test // Cas non passant
+    public void addBuddyWithExistingEmailToExistingUserTest() throws Exception {
+
+        // GIVEN
+
+        // Constantes pour le jeu de test
+        String lastNameTest = "NomTest01";
+        String firstNameTest = "PrenomTest01";
+        String emailBuddyTest = "jb@email.com";
+        String emailUserTest = "jb1@email.com";
+        String passwordTest = "pwd01";
+        BigDecimal balanceTest = BigDecimal.valueOf(0);
+        Date createDate = now();
+
+
+        // WHEN
+        User buddyToAdd = new User(firstNameTest, lastNameTest, emailBuddyTest, passwordTest, balanceTest, createDate);
+        User userTest = new User(firstNameTest, lastNameTest, emailUserTest, passwordTest, balanceTest, createDate);
         List<Relation> relationList = new ArrayList<>();
 
         Relation userToAddRelation = new Relation(userTest, buddyToAdd);
