@@ -10,11 +10,11 @@ import java.io.Serializable;
 public class InternalTransfert extends Transfert implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "sender_id")
     private User userSender;
 
     @ManyToOne
-    @JoinColumn(name = "user_id1")
+    @JoinColumn(name = "receiver_id")
     private User userReceiver;
 
     public User getUserSender() {
