@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "external_transfert")
@@ -18,6 +19,14 @@ public class ExternalTransfert extends Transfert implements Serializable {
     @ManyToOne
     @JoinColumn(name="bank_account_iban")
     private BankAccount bankAccount;
+
+    public ExternalTransfert(@NotNull BigDecimal amount, String description, @NotNull Date transactionDate) {
+        super(amount, description, transactionDate);
+    }
+
+    public ExternalTransfert() {
+        super();
+    }
 
     public BigDecimal getFees() {
         return fees;

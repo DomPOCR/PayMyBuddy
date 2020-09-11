@@ -33,14 +33,14 @@ public class TransfertController {
 
 
         if (errors.hasErrors()) {
-            logger.error("Transfert : KO");
+            logger.error("Transfert : KO - id sender, id receiver and amount are required !!");
             throw new DataMissingException("Transfert failed : id sender, id receiver and amount are required !!");
         }
 
-       InternalTransfert transfertBuddyResult = transfertService.transfertBuddy(transfertBuddy);
+       InternalTransfertDto transfertBuddyResult = transfertService.transfertBuddy(transfertBuddy);
 
         //logger.info("Transfert de " + transfertBuddy.getUserSender() + "vers " + transfertBuddy.getUserReceiver() + " OK");
-        return new ResponseEntity(transfertBuddy, HttpStatus.CREATED);
+        return new ResponseEntity(transfertBuddyResult, HttpStatus.CREATED);
     }
 
 

@@ -30,7 +30,23 @@ public class Transfert implements Serializable {
     @NotNull
     private Date transactionDate;
 
+    public Transfert(@NotNull BigDecimal amount, String description, @NotNull Date transactionDate) {
+        super();
+        this.amount = amount;
+        this.description = description;
+        this.transactionDate = transactionDate;
+    }
 
+    public Transfert(@NotNull Integer id,@NotNull BigDecimal amount, String description, @NotNull Date transactionDate) {
+        this.id = id;
+        this.amount = amount;
+        this.description = description;
+        this.transactionDate = transactionDate;
+    }
+
+    public Transfert() {
+        super();
+    }
 
     public Integer getId() {
         return id;
