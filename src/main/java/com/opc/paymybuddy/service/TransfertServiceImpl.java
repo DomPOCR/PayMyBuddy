@@ -17,10 +17,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +41,11 @@ public class TransfertServiceImpl implements TransfertService {
 
     @Autowired
     UserDao userDao;
+
+    @Override
+    public List<Transfert> findAll(){
+            return transfertDao.findAll();
+    }
 
     @Override
     public InternalTransfertDto transfertBuddy(InternalTransfertDto transfertBuddy) throws Exception {
@@ -107,24 +112,25 @@ public class TransfertServiceImpl implements TransfertService {
 
         userSender.get().setBalance(senderNewBalance);
         userDao.save(userSender.get());
+
         transfertBuddy.setSenderBalance(userSender.get().getBalance());
 
         // Sauvegarde transaction
         // **********************
 
-        //TODO la sauvegarde est KO
-
         Date now = new Date();
 
-       // InternalTransfert internalTransfert = new InternalTransfert(userSender.get(),userReceiver.get());
-        InternalTransfert internalTransfert = new InternalTransfert(userSender.get(),userReceiver.get(),transfertBuddy.getAmount(),transfertBuddy.getDescription(),now);
+        InternalTransfert internalTransfert = new InternalTransfert(userSender.get(),userReceiver.get(),
+                                                                    transfertBuddy.getAmount(),transfertBuddy.getDescription(),now);
 
-        internalTransfertDao.save(internalTransfert);
+         internalTransfertDao.save(internalTransfert);
 
-        //Transfert transfert = new Transfert(0,transfertBuddy.getAmount(),transfertBuddy.getDescription(),now);
-        //transfertDao.save(transfert);
 
-        logger.info("Transfert buddy OK, amout = %s",transfertBuddy.getAmount() );
+        String mess = String.format("Transfert buddy OK, from user id %d to user id %d amount = %d",
+                transfertBuddy.getSenderId(),
+                transfertBuddy.getReceiverId(),
+                transfertBuddy.getAmount().intValue());
+        logger.info(mess);
 
         return transfertBuddy;
 

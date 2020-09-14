@@ -16,7 +16,6 @@ public class Transfert implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
     private Integer id;
 
     @Column(name = "amount", columnDefinition = "Decimal(9,2)", precision = 9,scale = 2)
