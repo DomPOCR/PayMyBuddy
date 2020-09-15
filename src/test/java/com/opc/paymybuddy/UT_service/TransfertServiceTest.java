@@ -333,4 +333,43 @@ public class TransfertServiceTest {
             assert (eExp.getMessage().contains("the amount to be credited must be greater than 0"));
         }
     }
+
+    @Test // Cas non passant
+    public void newInternalTransfertWithBuddyNotInListBuddy() throws Exception {
+
+        // GIVEN
+
+        // Constantes pour le jeu de test
+        Integer senderId = 1;
+        Integer receiverId = 5;
+        BigDecimal amount = BigDecimal.valueOf(5);
+        String description = "Remboursement café";
+
+        InternalTransfertDto internalTransfertTest = new InternalTransfertDto(senderId, receiverId, amount, description);
+
+        User userReceiver = new User(firstNameTest1, lastNameTest1, emailUserTest1, passwordTest1, balanceTest1, createDate1);
+        User userSender = new User(firstNameTest2, lastNameTest2, emailUserTest2, passwordTest2, balanceTest2, createDate2);
+
+        userSender.setId(senderId);
+        userReceiver.setId(receiverId);
+
+        Relation myBuddy = new Relation(userSender, userReceiver);
+        List<Relation> listRelation = new ArrayList();
+        //listRelation.add(myBuddy); On n'ajoute pas le buddy à la liste
+        userSender.setListRelations(listRelation);
+
+        relationDaoMock.save(myBuddy);
+
+        // WHEN
+        Mockito.when(userDaoMock.findById(receiverId)).thenReturn(Optional.of(userReceiver));
+        Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
+
+        // THEN
+        try {
+            InternalTransfertDto internalTransfert = transfertService.transfertBuddy(internalTransfertTest);
+        } catch (DataNotExistException eExp) {
+            assert (eExp.getMessage().contains("Add it before making a transfer"));
+        }
+
+    }
 }
