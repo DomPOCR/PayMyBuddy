@@ -1,8 +1,6 @@
 package com.opc.paymybuddy.UT_service;
 
-import com.opc.paymybuddy.dao.RelationDao;
-import com.opc.paymybuddy.dao.TransfertDao;
-import com.opc.paymybuddy.dao.UserDao;
+import com.opc.paymybuddy.dao.*;
 import com.opc.paymybuddy.dto.InternalTransfertDto;
 import com.opc.paymybuddy.model.Relation;
 import com.opc.paymybuddy.model.User;
@@ -10,6 +8,7 @@ import com.opc.paymybuddy.service.TransfertService;
 import com.opc.paymybuddy.service.TransfertServiceImpl;
 import com.opc.paymybuddy.web.exceptions.DataIncorrectException;
 import com.opc.paymybuddy.web.exceptions.DataNotExistException;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,10 +30,7 @@ import java.util.Optional;
 import static org.assertj.core.util.DateUtil.now;
 import static org.mockito.ArgumentMatchers.any;
 
-
-@SpringBootTest
-@AutoConfigureMockMvc
-//@ExtendWith(SpringExtension.class) TODO KO !!
+@ExtendWith(SpringExtension.class) //TODO KO !!
 public class TransfertServiceTest {
 
     @TestConfiguration
@@ -48,12 +44,22 @@ public class TransfertServiceTest {
 
     @Autowired
     TransfertService transfertService;
+
     @MockBean
     TransfertDao transfertDaoMock;
+
+    @MockBean
+    InternalTransfertDao internalTransfertDaoMock;
+
+    @MockBean
+    ExternalTransfertDao externalTransfertDaoMock;
+
     @MockBean
     UserDao userDaoMock;
+
     @MockBean
-    RelationDao relationDaoMock;
+    BankAccountDao bankAccountDaoMock;
+
 
     String lastNameTest1 = "NomTest01";
     String firstNameTest1 = "PrenomTest01";
@@ -95,8 +101,6 @@ public class TransfertServiceTest {
         listRelation.add(myBuddy);
         userSender.setListRelations(listRelation);
 
-        relationDaoMock.save(myBuddy);
-
         // WHEN
         Mockito.when(userDaoMock.findById(receiverId)).thenReturn(Optional.of(userReceiver));
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
@@ -130,18 +134,18 @@ public class TransfertServiceTest {
         listRelation.add(myBuddy);
         userSender.setListRelations(listRelation);
 
-        relationDaoMock.save(myBuddy);
-
         // WHEN
         Mockito.when(userDaoMock.findById(receiverId)).thenReturn(Optional.of(userReceiver));
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.empty());
 
         // THEN
-        try {
+        DataNotExistException e = Assert.assertThrows(DataNotExistException.class,()->transfertService.transfertBuddy(internalTransfertTest) );
+        assert (e.getMessage().contains("senderId 99 does not exist"));
+        /*try {
             InternalTransfertDto internalTransfert = transfertService.transfertBuddy(internalTransfertTest);
         } catch (DataNotExistException eExp) {
             assert (eExp.getMessage().contains("senderId 99 does not exist"));
-        }
+        }*/
 
     }
     @Test // Cas non passant TODO KO sur le contains relation
@@ -165,8 +169,6 @@ public class TransfertServiceTest {
         List<Relation> listRelation = new ArrayList();
         listRelation.add(myBuddy);
         userSender.setListRelations(listRelation);
-
-        relationDaoMock.save(myBuddy);
 
         // WHEN
         Mockito.when(userDaoMock.findById(receiverId)).thenReturn(Optional.empty());
@@ -205,8 +207,6 @@ public class TransfertServiceTest {
         listRelation.add(myBuddy);
         userSender.setListRelations(listRelation);
 
-        relationDaoMock.save(myBuddy);
-
         // WHEN
         Mockito.when(userDaoMock.findById(receiverId)).thenReturn(Optional.of(userReceiver));
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
@@ -242,8 +242,6 @@ public class TransfertServiceTest {
         List<Relation> listRelation = new ArrayList();
         listRelation.add(myBuddy);
         userSender.setListRelations(listRelation);
-
-        relationDaoMock.save(myBuddy);
 
         // WHEN
         Mockito.when(userDaoMock.findById(receiverId)).thenReturn(Optional.of(userReceiver));
@@ -282,8 +280,6 @@ public class TransfertServiceTest {
         listRelation.add(myBuddy);
         userSender.setListRelations(listRelation);
 
-        relationDaoMock.save(myBuddy);
-
         // WHEN
         Mockito.when(userDaoMock.findById(receiverId)).thenReturn(Optional.of(userReceiver));
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
@@ -320,8 +316,6 @@ public class TransfertServiceTest {
         listRelation.add(myBuddy);
         userSender.setListRelations(listRelation);
 
-        relationDaoMock.save(myBuddy);
-
         // WHEN
         Mockito.when(userDaoMock.findById(receiverId)).thenReturn(Optional.of(userReceiver));
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
@@ -357,8 +351,6 @@ public class TransfertServiceTest {
         List<Relation> listRelation = new ArrayList();
         //listRelation.add(myBuddy); On n'ajoute pas le buddy à la liste
         userSender.setListRelations(listRelation);
-
-        relationDaoMock.save(myBuddy);
 
         // WHEN
         Mockito.when(userDaoMock.findById(receiverId)).thenReturn(Optional.of(userReceiver));

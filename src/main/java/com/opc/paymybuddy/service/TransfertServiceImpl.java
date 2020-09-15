@@ -1,15 +1,10 @@
 package com.opc.paymybuddy.service;
 
 
-import com.opc.paymybuddy.dao.ExternalTransfertDao;
-import com.opc.paymybuddy.dao.InternalTransfertDao;
-import com.opc.paymybuddy.dao.TransfertDao;
-import com.opc.paymybuddy.dao.UserDao;
+import com.opc.paymybuddy.dao.*;
+import com.opc.paymybuddy.dto.ExternalTransfertDto;
 import com.opc.paymybuddy.dto.InternalTransfertDto;
-import com.opc.paymybuddy.model.InternalTransfert;
-import com.opc.paymybuddy.model.Relation;
-import com.opc.paymybuddy.model.Transfert;
-import com.opc.paymybuddy.model.User;
+import com.opc.paymybuddy.model.*;
 import com.opc.paymybuddy.web.exceptions.DataIncorrectException;
 import com.opc.paymybuddy.web.exceptions.DataNotExistException;
 import org.apache.logging.log4j.LogManager;
@@ -42,10 +37,19 @@ public class TransfertServiceImpl implements TransfertService {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    BankAccountDao bankAccountDao;
+
     @Override
     public List<Transfert> findAll(){
             return transfertDao.findAll();
     }
+
+
+
+    /**************************************************************************************/
+    /***                        Transfert interne vers un ami                           ***/
+    /**************************************************************************************/
 
     @Override
     public InternalTransfertDto transfertBuddy(InternalTransfertDto transfertBuddy) throws Exception {
@@ -94,6 +98,8 @@ public class TransfertServiceImpl implements TransfertService {
             throw new DataNotExistException(mess);
         }
 
+        logger.info("Début transfert buddy");
+
         // Mise à jour des soldes
         // **********************
 
@@ -133,6 +139,85 @@ public class TransfertServiceImpl implements TransfertService {
         logger.info(mess);
 
         return transfertBuddy;
+
+    }
+
+    /***                        Transfert externe
+     ***    -  depuis le compte interne vers la banque si montant négatif
+     ***    -  depuis la banque vers le compte interne si montant positif
+
+    *************************************************************************************/
+
+    @Override
+    public ExternalTransfertDto transfertBank(ExternalTransfertDto transfertBank) {
+
+        Optional<User> user = userDao.findById(transfertBank.getUserId());
+        Optional<BankAccount> bankAccount = Optional.ofNullable(bankAccountDao.findByIban(transfertBank.getIban()));
+
+        // Données manquantes ou incorrectes
+        // *********************************
+
+        if (!user.isPresent()) {
+            String mess = String.format("Transert failed : user Id %d does not exist !!",transfertBank.getUserId());
+            logger.info(mess);
+            throw new DataNotExistException(mess);
+        }
+        if(!bankAccount.isPresent()){
+            String mess = String.format("Transert failed : IBAN %s does not exist for this user Id %d !!",transfertBank.getIban(),transfertBank.getUserId());
+            logger.info(mess);
+            throw new DataNotExistException(mess);
+        }
+        if (transfertBank.getAmount().intValue() == 0) {
+            String mess = String.format("Transert failed : the amount cannot be equal to 0 !!");
+            logger.info(mess);
+            throw new DataIncorrectException(mess);
+        }
+
+        if (transfertBank.getAmount().intValue() <= 0) {    // Transfert compte interne vers banque
+
+
+            // Mise à jour du solde
+            // ********************
+
+            BigDecimal fees = transfertBank.getAmount().multiply(BigDecimal.valueOf(0,5));
+            BigDecimal amountWithFees = transfertBank.getAmount().add(fees);
+
+            if (user.get().getBalance().compareTo(amountWithFees)<0 )
+            {
+                String mess = String.format("Transert failed : Insufficient balance : %d for this user (id %d %s) !! Need with fees %d",
+                        user.get().getBalance().intValue(),user.get().getId(),user.get().getEmail(),amountWithFees.intValue());
+                logger.info(mess);
+                throw new DataIncorrectException(mess);
+            }
+
+            BigDecimal userNewBalance = user.get().getBalance().subtract(amountWithFees);
+
+            logger.info("Début transfert vers la banque");
+
+            user.get().setBalance(userNewBalance);
+            userDao.save(user.get());
+
+            transfertBank.setAccountBalance(user.get().getBalance());
+
+            // Sauvegarde transaction
+            // **********************
+
+            Date now = new Date();
+
+            ExternalTransfert externalTransfert = new ExternalTransfert(amountWithFees,transfertBank.getDescription(),now);
+
+            externalTransfertDao.save(externalTransfert);
+
+            String mess = String.format("Transfert bank OK, IBAN %s user id %d amount = %d",
+                    transfertBank.getIban(),
+                    transfertBank.getUserId(),
+                    transfertBank.getAmount().intValue());
+            logger.info(mess);
+
+            return transfertBank;
+
+
+        } else return null;
 
     }
 }

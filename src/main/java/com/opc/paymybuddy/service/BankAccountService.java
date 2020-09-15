@@ -8,6 +8,8 @@ public interface BankAccountService {
 
      List<BankAccount> findAll();
 
+     BankAccount findByIban(String iban);
+
      BankAccount  addBankAccount(BankAccount addAccount, Integer userId) throws Exception;
 
 

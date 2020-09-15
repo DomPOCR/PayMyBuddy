@@ -33,6 +33,11 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
+    public BankAccount findByIban(String iban) {
+        return bankAccountDao.findByIban(iban);
+    }
+
+    @Override
     public BankAccount addBankAccount(BankAccount addAccount, Integer userId) throws Exception {
 
         if (addAccount.getIban().isEmpty()) {

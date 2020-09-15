@@ -1,6 +1,8 @@
 package com.opc.paymybuddy.web.controller;
 
+import com.opc.paymybuddy.dto.ExternalTransfertDto;
 import com.opc.paymybuddy.dto.InternalTransfertDto;
+import com.opc.paymybuddy.model.ExternalTransfert;
 import com.opc.paymybuddy.model.InternalTransfert;
 import com.opc.paymybuddy.model.Transfert;
 import com.opc.paymybuddy.service.TransfertService;
@@ -38,7 +40,6 @@ public class TransfertController {
 
     }
 
-
     // Credit buddy (transfert interne)
     @PostMapping(value = "/transfert/buddy")
     public ResponseEntity<InternalTransfert> transfertBuddy (@RequestBody @Valid InternalTransfertDto transfertBuddy, Errors errors) throws Exception{
@@ -49,11 +50,23 @@ public class TransfertController {
             throw new DataMissingException("Transfert failed : id sender, id receiver and amount are required !!");
         }
 
-       InternalTransfertDto transfertBuddyResult = transfertService.transfertBuddy(transfertBuddy);
+        InternalTransfertDto transfertBuddyResult = transfertService.transfertBuddy(transfertBuddy);
 
-        //logger.info("Transfert de " + transfertBuddy.getUserSender() + "vers " + transfertBuddy.getUserReceiver() + " OK");
         return new ResponseEntity(transfertBuddyResult, HttpStatus.CREATED);
     }
 
+    // Credit compte bancaire (transfert externe vers la banque)
+    @PostMapping(value = "/transfert/bank")
+    public ResponseEntity<ExternalTransfert> transfertBank (@RequestBody @Valid ExternalTransfertDto transfertBank, Errors errors ) throws Exception{
+
+        if (errors.hasErrors()) {
+            logger.error("Transfert : KO - id user, IBAN and amount are required !!");
+            throw new DataMissingException("Transfert failed : id user, IBAN and amount are required !!");
+        }
+
+        ExternalTransfertDto transfertBankResult = transfertService.transfertBank(transfertBank);
+
+        return new ResponseEntity(transfertBankResult, HttpStatus.CREATED);
+    }
 
 }

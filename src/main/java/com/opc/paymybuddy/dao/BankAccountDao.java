@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BankAccountDao extends JpaRepository<BankAccount,String> {
 
-
+    BankAccount findByIban(String iban);
 }
