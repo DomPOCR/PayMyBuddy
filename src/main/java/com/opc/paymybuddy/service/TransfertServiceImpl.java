@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 @Service
 @Transactional
@@ -62,29 +63,29 @@ public class TransfertServiceImpl implements TransfertService {
         // *********************************
 
         if (!userSender.isPresent()) {
-            String mess = String.format("Transert failed : senderId %d does not exist !!", transfertBuddy.getSenderId());
+            String mess = String.format("Transfert failed : senderId %d does not exist !!", transfertBuddy.getSenderId());
             logger.info(mess);
             throw new DataNotExistException(mess);
         }
         if (!userReceiver.isPresent()) {
-            String mess = String.format("Transert failed : receiverId %d does not exist !!", transfertBuddy.getReceiverId());
+            String mess = String.format("Transfert failed : receiverId %d does not exist !!", transfertBuddy.getReceiverId());
             logger.info(mess);
             throw new DataNotExistException(mess);
         }
 
         if (userSender.get().getBalance().intValue() <= transfertBuddy.getAmount().intValue()) {
-            String mess = String.format("Transert failed : Insufficient balance : %d for this user (id %d %s) !!",
+            String mess = String.format("Transfert failed : Insufficient balance : %d for this user (id %d %s) !!",
                     userSender.get().getBalance().intValue(),userSender.get().getId(),userSender.get().getEmail());
             logger.info(mess);
             throw new DataIncorrectException(mess);
         }
         if (transfertBuddy.getSenderId() == transfertBuddy.getReceiverId()) {
-            String mess = String.format("Transert failed : senderId and receiverId cannot be the same !!");
+            String mess = String.format("Transfert failed : senderId and receiverId cannot be the same !!");
             logger.info(mess);
             throw new DataIncorrectException(mess);
         }
         if (transfertBuddy.getAmount().intValue() <= 0) {
-            String mess = String.format("Transert failed : the amount to be credited must be greater than 0 !!");
+            String mess = String.format("Transfert failed : the amount to be credited must be greater than 0 !!");
             logger.info(mess);
             throw new DataIncorrectException(mess);
         }
@@ -92,20 +93,23 @@ public class TransfertServiceImpl implements TransfertService {
         Relation myBuddy = new Relation(userSender.get(), userReceiver.get());
 
         if (!userSender.get().getListRelations().contains(myBuddy)) {
-            String mess = String.format("Transert failed : this user (id %d  %s) is not in this user's (id %d %s) friend list !! Add it before making a transfer !!",
+            String mess = String.format("Transfert failed : this user (id %d  %s) is not in this user's (id %d %s) friend list !! Add it before making a transfer !!",
                     userReceiver.get().getId(), userReceiver.get().getEmail(), userSender.get().getId(), userSender.get().getEmail());
             logger.info(mess);
             throw new DataNotExistException(mess);
         }
 
-        logger.info("Début transfert buddy");
+        logger.info("Internal transfert to buddy is beginning");
+
+        BigDecimal receiverNewBalance = new BigDecimal("0.00");
+        BigDecimal senderNewBalance = new BigDecimal("0.00");
 
         // Mise à jour des soldes
         // **********************
 
         // Receiver
 
-        BigDecimal receiverNewBalance = BigDecimal.valueOf(userReceiver.get().getBalance().intValue() + transfertBuddy.getAmount().intValue());
+        receiverNewBalance = BigDecimal.valueOf(userReceiver.get().getBalance().intValue() + transfertBuddy.getAmount().intValue());
 
         userReceiver.get().setBalance(receiverNewBalance);
         userDao.save(userReceiver.get());
@@ -114,7 +118,7 @@ public class TransfertServiceImpl implements TransfertService {
 
         // Sender
 
-        BigDecimal senderNewBalance = BigDecimal.valueOf(userSender.get().getBalance().intValue() - transfertBuddy.getAmount().intValue());
+       senderNewBalance = BigDecimal.valueOf(userSender.get().getBalance().intValue() - transfertBuddy.getAmount().intValue());
 
         userSender.get().setBalance(senderNewBalance);
         userDao.save(userSender.get());
@@ -154,70 +158,142 @@ public class TransfertServiceImpl implements TransfertService {
         Optional<User> user = userDao.findById(transfertBank.getUserId());
         Optional<BankAccount> bankAccount = Optional.ofNullable(bankAccountDao.findByIban(transfertBank.getIban()));
 
+        BigDecimal fees = new BigDecimal("0.00");
+        BigDecimal amountDebited = new BigDecimal("0.00");
+        BigDecimal amountCredited = new BigDecimal("0.00");
+        BigDecimal userNewBalance = new BigDecimal("0.00");
+        BigDecimal diffAmount = new BigDecimal("0.00");
+
+        //Get parameters values
+        ResourceBundle bundle = ResourceBundle.getBundle("application");
+        double feeTx = Double.parseDouble(bundle.getString("application.fee.rate"));
+
         // Données manquantes ou incorrectes
         // *********************************
 
         if (!user.isPresent()) {
-            String mess = String.format("Transert failed : user Id %d does not exist !!",transfertBank.getUserId());
+            String mess = String.format("Transfert failed : user Id %d does not exist !!",transfertBank.getUserId());
             logger.info(mess);
             throw new DataNotExistException(mess);
         }
         if(!bankAccount.isPresent()){
-            String mess = String.format("Transert failed : IBAN %s does not exist for this user Id %d !!",transfertBank.getIban(),transfertBank.getUserId());
+            String mess = String.format("Transfert failed : IBAN %s does not exist for this user Id %d !!",transfertBank.getIban(),transfertBank.getUserId());
             logger.info(mess);
             throw new DataNotExistException(mess);
         }
         if (transfertBank.getAmount().intValue() == 0) {
-            String mess = String.format("Transert failed : the amount cannot be equal to 0 !!");
+            String mess = String.format("Transfert failed : the amount cannot be equal to 0 !!");
             logger.info(mess);
             throw new DataIncorrectException(mess);
         }
 
+
         if (transfertBank.getAmount().intValue() <= 0) {    // Transfert compte interne vers banque
 
+            logger.info("External transfert TO the bank is beginning ");
 
             // Mise à jour du solde
             // ********************
+            fees = BigDecimal.valueOf(feeTx).multiply(transfertBank.getAmount());
 
-            BigDecimal fees = transfertBank.getAmount().multiply(BigDecimal.valueOf(0,5));
-            BigDecimal amountWithFees = transfertBank.getAmount().add(fees);
+            amountDebited = transfertBank.getAmount().add(fees);
+            diffAmount = user.get().getBalance().add(amountDebited);
 
-            if (user.get().getBalance().compareTo(amountWithFees)<0 )
+            amountCredited = transfertBank.getAmount().abs().add(fees);
+
+            if (diffAmount.compareTo(BigDecimal.ZERO) <0)
             {
-                String mess = String.format("Transert failed : Insufficient balance : %d for this user (id %d %s) !! Need with fees %d",
-                        user.get().getBalance().intValue(),user.get().getId(),user.get().getEmail(),amountWithFees.intValue());
+                String mess = String.format("Transfert failed : Insufficient balance : %d for this user (id %d %s) !! Need with fees %.2f",
+                        user.get().getBalance().intValue(),user.get().getId(),user.get().getEmail(),amountDebited.abs());
                 logger.info(mess);
                 throw new DataIncorrectException(mess);
             }
 
-            BigDecimal userNewBalance = user.get().getBalance().subtract(amountWithFees);
-
-            logger.info("Début transfert vers la banque");
+            // Add car montant négatif (débit) pour amountDebited
+           userNewBalance = user.get().getBalance().add(amountDebited);
 
             user.get().setBalance(userNewBalance);
             userDao.save(user.get());
 
             transfertBank.setAccountBalance(user.get().getBalance());
+            transfertBank.setFees(fees);
 
             // Sauvegarde transaction
             // **********************
 
             Date now = new Date();
 
-            ExternalTransfert externalTransfert = new ExternalTransfert(amountWithFees,transfertBank.getDescription(),now);
+            ExternalTransfert externalTransfert = new ExternalTransfert();
+
+            externalTransfert.setFees(fees);
+            externalTransfert.setBankAccount(bankAccount.get());
+            externalTransfert.setAmount(amountDebited);
+            externalTransfert.setDescription(transfertBank.getDescription());
+            externalTransfert.setTransactionDate(now);
 
             externalTransfertDao.save(externalTransfert);
 
-            String mess = String.format("Transfert bank OK, IBAN %s user id %d amount = %d",
+            ExternalTransfertDto externalTransfertDto = new ExternalTransfertDto(
+                                                        transfertBank.getUserId(),transfertBank.getIban(),transfertBank.getAmount(),fees.abs(),amountDebited.abs(),amountCredited,
+                                                        transfertBank.getDescription(),transfertBank.getAccountBalance());
+
+            String mess = String.format("Transfert TO the bank OK, IBAN %s user id %d amount minus fees = %.2f",
                     transfertBank.getIban(),
                     transfertBank.getUserId(),
-                    transfertBank.getAmount().intValue());
+                    amountCredited.doubleValue());
             logger.info(mess);
 
-            return transfertBank;
+            return externalTransfertDto;
+
+        } else  {               // Transfert banque vers compte interne
+
+            logger.info("External transfert FROM the bank is beginning ");
+
+            // Mise à jour du solde
+            // ********************
+            fees = BigDecimal.valueOf(feeTx).multiply(transfertBank.getAmount());
+
+            amountCredited = transfertBank.getAmount().subtract(fees);
+
+            userNewBalance = user.get().getBalance().add(amountCredited);
+
+            user.get().setBalance(userNewBalance);
+            userDao.save(user.get());
+
+            transfertBank.setAccountBalance(user.get().getBalance());
+            transfertBank.setFees(fees);
+
+            // Sauvegarde transaction
+            // **********************
+
+            Date now = new Date();
+
+            ExternalTransfert externalTransfert = new ExternalTransfert();
+
+            externalTransfert.setFees(fees);
+            externalTransfert.setBankAccount(bankAccount.get());
+            externalTransfert.setAmount(amountDebited);
+            externalTransfert.setDescription(transfertBank.getDescription());
+            externalTransfert.setTransactionDate(now);
+
+            externalTransfertDao.save(externalTransfert);
+
+            ExternalTransfertDto externalTransfertDto = new ExternalTransfertDto(
+                    transfertBank.getUserId(),transfertBank.getIban(),transfertBank.getAmount(),fees.abs(),amountDebited.abs(),amountCredited,
+                    transfertBank.getDescription(),transfertBank.getAccountBalance());
+
+            String mess = String.format("Transfert FROM the bank OK, IBAN %s user id %d amount minus fees = %.2f",
+                    transfertBank.getIban(),
+                    transfertBank.getUserId(),
+                    amountCredited.doubleValue());
+            logger.info(mess);
+
+            return externalTransfertDto;
 
 
-        } else return null;
+
+
+        }
 
     }
 }

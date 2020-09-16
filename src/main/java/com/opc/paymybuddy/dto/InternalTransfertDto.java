@@ -1,9 +1,10 @@
 package com.opc.paymybuddy.dto;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class InternalTransfertDto {
+public class InternalTransfertDto  {
 
     @NotNull
     private Integer senderId;

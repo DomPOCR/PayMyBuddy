@@ -28,6 +28,8 @@ public class ExternalTransfert extends Transfert implements Serializable {
         super();
     }
 
+
+
     public BigDecimal getFees() {
         return fees;
     }

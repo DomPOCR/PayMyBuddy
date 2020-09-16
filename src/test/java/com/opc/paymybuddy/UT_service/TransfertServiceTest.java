@@ -14,8 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -28,9 +26,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.util.DateUtil.now;
-import static org.mockito.ArgumentMatchers.any;
 
-@ExtendWith(SpringExtension.class) //TODO KO !!
+@ExtendWith(SpringExtension.class)
 public class TransfertServiceTest {
 
     @TestConfiguration
@@ -75,7 +72,7 @@ public class TransfertServiceTest {
     BigDecimal balanceTest2 = BigDecimal.valueOf(50);
     Date createDate2 = now();
 
-    @Test // Cas passant //TODO KO sur le contains relation
+    @Test // Cas passant
     public void newInternalTransfertWithExistingBuddy() throws Exception {
 
         // GIVEN
@@ -93,8 +90,6 @@ public class TransfertServiceTest {
 
         userSender.setId(senderId);
         userReceiver.setId(receiverId);
-
-        // TODO faire un save de userSender et userReceiver ??
 
         Relation myBuddy = new Relation(userSender, userReceiver);
         List<Relation> listRelation = new ArrayList();
@@ -139,6 +134,7 @@ public class TransfertServiceTest {
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.empty());
 
         // THEN
+        // En remplacement du try / catch
         DataNotExistException e = Assert.assertThrows(DataNotExistException.class,()->transfertService.transfertBuddy(internalTransfertTest) );
         assert (e.getMessage().contains("senderId 99 does not exist"));
         /*try {
@@ -148,7 +144,7 @@ public class TransfertServiceTest {
         }*/
 
     }
-    @Test // Cas non passant TODO KO sur le contains relation
+    @Test // Cas non passant
     public void newInternalTransfertWithNonExistingReceiverId() throws Exception {
 
         // GIVEN
@@ -175,12 +171,8 @@ public class TransfertServiceTest {
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
 
         // THEN
-        try {
-            InternalTransfertDto internalTransfert = transfertService.transfertBuddy(internalTransfertTest);
-        } catch (DataNotExistException eExp) {
-            assert (eExp.getMessage().contains("receiverId 99 does not exist"));
-        }
-
+        DataNotExistException e = Assert.assertThrows(DataNotExistException.class,()->transfertService.transfertBuddy(internalTransfertTest) );
+        assert (e.getMessage().contains("receiverId 99 does not exist"));
     }
 
     @Test // Cas non passant
@@ -212,12 +204,8 @@ public class TransfertServiceTest {
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
 
         // THEN
-        try {
-            InternalTransfertDto internalTransfert = transfertService.transfertBuddy(internalTransfertTest);
-        } catch (DataIncorrectException eExp) {
-            assert (eExp.getMessage().contains("Insufficient balance"));
-        }
-
+        DataIncorrectException e = Assert.assertThrows(DataIncorrectException.class,()->transfertService.transfertBuddy(internalTransfertTest) );
+        assert (e.getMessage().contains("Insufficient balance"));
     }
     @Test // Cas non passant
     public void newInternalTransfertWithSameId() throws Exception {
@@ -248,12 +236,8 @@ public class TransfertServiceTest {
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
 
         // THEN
-        try {
-            InternalTransfertDto internalTransfert = transfertService.transfertBuddy(internalTransfertTest);
-        } catch (DataIncorrectException eExp) {
-            assert (eExp.getMessage().contains("senderId and receiverId cannot be the same"));
-        }
-
+        DataIncorrectException e = Assert.assertThrows(DataIncorrectException.class,()->transfertService.transfertBuddy(internalTransfertTest) );
+        assert (e.getMessage().contains("senderId and receiverId cannot be the same"));
     }
 
     @Test // Cas non passant
@@ -285,11 +269,8 @@ public class TransfertServiceTest {
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
 
         // THEN
-        try {
-            InternalTransfertDto internalTransfert = transfertService.transfertBuddy(internalTransfertTest);
-        } catch (DataIncorrectException eExp) {
-            assert (eExp.getMessage().contains("the amount to be credited must be greater than 0"));
-        }
+        DataIncorrectException e = Assert.assertThrows(DataIncorrectException.class,()->transfertService.transfertBuddy(internalTransfertTest) );
+        assert (e.getMessage().contains("the amount to be credited must be greater than 0"));
     }
 
     @Test // Cas non passant
@@ -321,11 +302,8 @@ public class TransfertServiceTest {
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
 
         // THEN
-        try {
-            InternalTransfertDto internalTransfert = transfertService.transfertBuddy(internalTransfertTest);
-        } catch (DataIncorrectException eExp) {
-            assert (eExp.getMessage().contains("the amount to be credited must be greater than 0"));
-        }
+        DataIncorrectException e = Assert.assertThrows(DataIncorrectException.class,()->transfertService.transfertBuddy(internalTransfertTest) );
+        assert (e.getMessage().contains("the amount to be credited must be greater than 0"));
     }
 
     @Test // Cas non passant
@@ -349,7 +327,7 @@ public class TransfertServiceTest {
 
         Relation myBuddy = new Relation(userSender, userReceiver);
         List<Relation> listRelation = new ArrayList();
-        //listRelation.add(myBuddy); On n'ajoute pas le buddy à la liste
+        //On n'ajoute pas le buddy à la liste (liste vide)
         userSender.setListRelations(listRelation);
 
         // WHEN
@@ -357,11 +335,7 @@ public class TransfertServiceTest {
         Mockito.when(userDaoMock.findById(senderId)).thenReturn(Optional.of(userSender));
 
         // THEN
-        try {
-            InternalTransfertDto internalTransfert = transfertService.transfertBuddy(internalTransfertTest);
-        } catch (DataNotExistException eExp) {
-            assert (eExp.getMessage().contains("Add it before making a transfer"));
-        }
-
+        DataNotExistException e = Assert.assertThrows(DataNotExistException.class,()->transfertService.transfertBuddy(internalTransfertTest) );
+        assert (e.getMessage().contains("Add it before making a transfer"));
     }
 }

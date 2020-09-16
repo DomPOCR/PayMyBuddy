@@ -96,6 +96,7 @@ public class UserControllerTest {
         ObjectMapper obm = new ObjectMapper();
         ObjectNode jsonUser = obm.createObjectNode();
 
+        // GIVEN
         jsonUser.set("email", TextNode.valueOf(emailTest));
         jsonUser.set("password", TextNode.valueOf(passwordTest));
         jsonUser.set("firstname", TextNode.valueOf(firstNameTest));

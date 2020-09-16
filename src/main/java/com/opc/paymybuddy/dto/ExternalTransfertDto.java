@@ -11,15 +11,24 @@ public class ExternalTransfertDto {
     private String iban;
     @NotNull
     private BigDecimal amount;
+    private BigDecimal fees;
+    private BigDecimal amountDebited;
+    private BigDecimal amountCredited;
     private String description;
     private BigDecimal accountBalance;
 
+    public ExternalTransfertDto() {
+        super();
+    }
 
-    public ExternalTransfertDto(@NotNull Integer userId, @NotNull String iban, @NotNull BigDecimal amount, String description, BigDecimal accountBalance) {
+    public ExternalTransfertDto(@NotNull Integer userId, @NotNull String iban, @NotNull BigDecimal amount, BigDecimal fees, BigDecimal amountDebited, BigDecimal amountCredited, String description, BigDecimal accountBalance) {
         super();
         this.userId = userId;
         this.iban = iban;
         this.amount = amount;
+        this.fees = fees;
+        this.amountDebited = amountDebited;
+        this.amountCredited = amountCredited;
         this.description = description;
         this.accountBalance = accountBalance;
     }
@@ -54,6 +63,30 @@ public class ExternalTransfertDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BigDecimal getFees() {
+        return fees;
+    }
+
+    public void setFees(BigDecimal fees) {
+        this.fees = fees;
+    }
+
+    public BigDecimal getAmountDebited() {
+        return amountDebited;
+    }
+
+    public void setAmountDebited(BigDecimal amountDebited) {
+        this.amountDebited = amountDebited;
+    }
+
+    public BigDecimal getAmountCredited() {
+        return amountCredited;
+    }
+
+    public void setAmountCredited(BigDecimal amountCredited) {
+        this.amountCredited = amountCredited;
     }
 
     public BigDecimal getAccountBalance() {

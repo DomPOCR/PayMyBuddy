@@ -92,8 +92,6 @@ class BankAccountControllerTest {
                 .content(jsonBank.toString())
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-             //   .andExpect(MockMvcResultMatchers.jsonPath("$..iban").value(ibanTest))
-             //  .andExpect(MockMvcResultMatchers.jsonPath("$..bankName").value(bankNameTest))
                 .andExpect(status().isCreated());
 
     }
