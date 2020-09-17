@@ -288,6 +288,7 @@
                             <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
                             <excludes>
                                 <exclude>*com/opc/paymybuddy/model/**/*</exclude>
+                                <exclude>*com/opc/paymybuddy/dto/**/*</exclude>
                                 <exclude>*com/opc/paymybuddy/config/**/*</exclude>
                             </excludes>
                         </configuration>
@@ -323,6 +324,7 @@
                             <outputDirectory>${project.reporting.outputDirectory}/jacoco-merged</outputDirectory>
                             <excludes>
                                 <exclude>*com/opc/paymybuddy/model/**/*</exclude>
+                                <exclude>*com/opc/paymybuddy/dto/**/*</exclude>
                                 <exclude>*com/opc/paymybuddy/config/**/*</exclude>
                             </excludes>
                         </configuration>

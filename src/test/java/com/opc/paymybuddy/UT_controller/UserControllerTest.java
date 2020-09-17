@@ -40,13 +40,10 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
-    @MockBean
     private User userMock;
 
-    @MockBean
-    private UserDto userDtoMock;
 
-    // Encrypt password
+     // Encrypt password
     static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     // Constantes pour le jeu de test
@@ -67,7 +64,7 @@ public class UserControllerTest {
     public void setUpEach() {
 
         userMock = new User(lastNameTest,firstNameTest,emailTest,passwordTest,balanceTest,createDate);
-        userDtoMock = new UserDto(emailTest,passwordTest,lastNameTest,firstNameTest);
+
     }
 
     @Test

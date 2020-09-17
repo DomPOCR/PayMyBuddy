@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.opc.paymybuddy.dao.UserDao;
+import com.opc.paymybuddy.dto.ExternalTransfertDto;
 import com.opc.paymybuddy.dto.InternalTransfertDto;
 import com.opc.paymybuddy.model.InternalTransfert;
 import com.opc.paymybuddy.model.Transfert;
@@ -43,36 +44,11 @@ public class TransfertControllerTest {
     @MockBean
     private TransfertService transfertService;
 
-    @MockBean
-    private UserDao userDao;
+    // TODO Déplacer et renommer
+    private ExternalTransfertDto externalTransfertDtoMock;
 
-    @MockBean
-    private InternalTransfert internalTransfertMock;
-
-    @MockBean
     private InternalTransfertDto internalTransfertDtoMock;
 
-    // Constantes pour le jeu de test
-
-    String lastNameTest1 = "NomTest01";
-    String firstNameTest1 = "PrenomTest01";
-    String emailUserTest1 = "jb01@email.com";
-    String passwordTest1 = "pwd01";
-    BigDecimal balanceTest1 = BigDecimal.valueOf(100);
-    Date createDate1 = now();
-
-    String lastNameTest2 = "NomTest02";
-    String firstNameTest2 = "PrenomTest02";
-    String emailUserTest2 = "jb02@email.com";
-    String passwordTest2 = "pwd02";
-    BigDecimal balanceTest2 = BigDecimal.valueOf(50);
-    Date createDate2 = now();
-
-    @BeforeEach
-    public void setUpEach() {
-        User userReceiver = new User(firstNameTest1, lastNameTest1, emailUserTest1, passwordTest1, balanceTest1, createDate1);
-        User userSender = new User(firstNameTest2, lastNameTest2, emailUserTest2, passwordTest2, balanceTest2, createDate2);
-    }
 
     @Test
     public void transfertBuddyControllerTest() throws Exception {
@@ -83,12 +59,11 @@ public class TransfertControllerTest {
         BigDecimal amount = BigDecimal.valueOf(5);
         String description = "Remboursement café";
 
-       //  TODO KO lorsque  le service est mocké
-       // Mockito.when(transfertService.transfertBuddy(any(InternalTransfertDto.class))).thenReturn(internalTransfertDtoMock);
+        internalTransfertDtoMock = new InternalTransfertDto(senderId,receiverId,BigDecimal.valueOf(amount.intValue()),description);
+        Mockito.when(transfertService.transfertBuddy(any(InternalTransfertDto.class))).thenReturn(internalTransfertDtoMock);
 
         // GIVEN
         ObjectMapper obm = new ObjectMapper();
-        obm.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         ObjectNode jsonTransfert = obm.createObjectNode();
 
         jsonTransfert.set("senderId", IntNode.valueOf(senderId));
@@ -103,8 +78,100 @@ public class TransfertControllerTest {
                 .content(jsonTransfert.toString())
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isCreated());
-                //.andExpect(MockMvcResultMatchers.jsonPath("$..amount").value(amount));
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$..amount").value(amount.intValue()));
 
+    }
+    @Test
+    public void TransfertToTheBankTest() throws Exception{
+
+        // Constantes pour le jeu de test
+        Integer userId = 2;
+        String iban = "IBANBAUER";
+        BigDecimal amount = BigDecimal.valueOf(-500);
+        String description = "Virement VERS ma banque";
+
+        externalTransfertDtoMock = new ExternalTransfertDto(userId,iban,amount);
+        Mockito.when(transfertService.transfertBank(any(ExternalTransfertDto.class))).thenReturn(externalTransfertDtoMock);
+
+        // GIVEN
+        ObjectMapper obm = new ObjectMapper();
+        ObjectNode jsonTransfert = obm.createObjectNode();
+
+        jsonTransfert.set("userId", IntNode.valueOf(userId));
+        jsonTransfert.set("iban",TextNode.valueOf(iban));
+        jsonTransfert.set("amount",IntNode.valueOf(amount.intValue()));
+        jsonTransfert.set("description", TextNode.valueOf(description));
+
+        // WHEN
+        // THEN
+        mockMvc.perform(MockMvcRequestBuilders.post("/transfert/bank")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonTransfert.toString())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void TransfertFromTheBankTest() throws Exception{
+
+        // Constantes pour le jeu de test
+        Integer userId = 2;
+        String iban = "IBANBAUER";
+        BigDecimal amount = BigDecimal.valueOf(500);
+        String description = "Virement DEPUIS ma banque";
+
+        externalTransfertDtoMock = new ExternalTransfertDto(userId,iban,amount);
+        Mockito.when(transfertService.transfertBank(any(ExternalTransfertDto.class))).thenReturn(externalTransfertDtoMock);
+
+        // GIVEN
+        ObjectMapper obm = new ObjectMapper();
+        ObjectNode jsonTransfert = obm.createObjectNode();
+
+        jsonTransfert.set("userId", IntNode.valueOf(userId));
+        jsonTransfert.set("iban",TextNode.valueOf(iban));
+        jsonTransfert.set("amount",IntNode.valueOf(amount.intValue()));
+        jsonTransfert.set("description", TextNode.valueOf(description));
+
+        // WHEN
+        // THEN
+        mockMvc.perform(MockMvcRequestBuilders.post("/transfert/bank")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonTransfert.toString())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void TransfertFromTheBankTestMissingUserId() throws Exception{
+
+        // Constantes pour le jeu de test
+        Integer userId = 2;
+        String iban = "IBANBAUER";
+        BigDecimal amount = BigDecimal.valueOf(500);
+        String description = "Virement DEPUIS ma banque";
+
+        externalTransfertDtoMock = new ExternalTransfertDto(userId,iban,amount);
+        Mockito.when(transfertService.transfertBank(any(ExternalTransfertDto.class))).thenReturn(externalTransfertDtoMock);
+
+        // GIVEN
+        ObjectMapper obm = new ObjectMapper();
+        ObjectNode jsonTransfert = obm.createObjectNode();
+
+
+        jsonTransfert.set("iban",TextNode.valueOf(iban));
+        jsonTransfert.set("amount",IntNode.valueOf(amount.intValue()));
+        jsonTransfert.set("description", TextNode.valueOf(description));
+
+        // WHEN
+        // THEN
+        mockMvc.perform(MockMvcRequestBuilders.post("/transfert/bank")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonTransfert.toString())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }
