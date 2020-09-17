@@ -201,6 +201,7 @@
                     <excludes>
                         <exclude>**/*IT.java</exclude>
                         <exclude>*com/opc/paymybuddy/model/**/*</exclude>
+                        <exclude>*com/opc/paymybuddy/dto/**/*</exclude>
                         <exclude>*com/opc/paymybuddy/config/**/*</exclude>
                     </excludes>
                 </configuration>

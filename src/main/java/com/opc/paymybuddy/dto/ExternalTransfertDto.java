@@ -21,6 +21,12 @@ public class ExternalTransfertDto {
         super();
     }
 
+    public ExternalTransfertDto(@NotNull Integer userId, @NotNull String iban, @NotNull BigDecimal amount) {
+        this.userId = userId;
+        this.iban = iban;
+        this.amount = amount;
+    }
+
     public ExternalTransfertDto(@NotNull Integer userId, @NotNull String iban, @NotNull BigDecimal amount, BigDecimal fees, BigDecimal amountDebited, BigDecimal amountCredited, String description, BigDecimal accountBalance) {
         super();
         this.userId = userId;

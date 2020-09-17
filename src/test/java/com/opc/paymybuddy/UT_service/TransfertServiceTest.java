@@ -1,7 +1,9 @@
 package com.opc.paymybuddy.UT_service;
 
 import com.opc.paymybuddy.dao.*;
+import com.opc.paymybuddy.dto.ExternalTransfertDto;
 import com.opc.paymybuddy.dto.InternalTransfertDto;
+import com.opc.paymybuddy.model.BankAccount;
 import com.opc.paymybuddy.model.Relation;
 import com.opc.paymybuddy.model.User;
 import com.opc.paymybuddy.service.TransfertService;
@@ -72,8 +74,10 @@ public class TransfertServiceTest {
     BigDecimal balanceTest2 = BigDecimal.valueOf(50);
     Date createDate2 = now();
 
+    // ************************ INTERNAL TRANSFERTS ****************************//
+
     @Test // Cas passant
-    public void newInternalTransfertWithExistingBuddy() throws Exception {
+    public void newInternalTransfertWithCorrectInformations() throws Exception {
 
         // GIVEN
 
@@ -108,7 +112,7 @@ public class TransfertServiceTest {
     }
 
     @Test // Cas non passant
-    public void newInternalTransfertWithNonExistingSenderId() throws Exception {
+    public void newInternalTransfertWithNonExistingSenderId()  {
 
         // GIVEN
 
@@ -145,7 +149,7 @@ public class TransfertServiceTest {
 
     }
     @Test // Cas non passant
-    public void newInternalTransfertWithNonExistingReceiverId() throws Exception {
+    public void newInternalTransfertWithNonExistingReceiverId() {
 
         // GIVEN
 
@@ -172,7 +176,7 @@ public class TransfertServiceTest {
 
         // THEN
         DataNotExistException e = Assert.assertThrows(DataNotExistException.class,()->transfertService.transfertBuddy(internalTransfertTest) );
-        assert (e.getMessage().contains("receiverId 99 does not exist"));
+        assert (e.getMessage().contains("receiverId " + receiverId + " does not exist"));
     }
 
     @Test // Cas non passant
@@ -208,7 +212,7 @@ public class TransfertServiceTest {
         assert (e.getMessage().contains("Insufficient balance"));
     }
     @Test // Cas non passant
-    public void newInternalTransfertWithSameId() throws Exception {
+    public void newInternalTransfertWithSameId() {
 
         // GIVEN
 
@@ -241,7 +245,7 @@ public class TransfertServiceTest {
     }
 
     @Test // Cas non passant
-    public void newInternalTransfertWithNegativeBalance() throws Exception {
+    public void newInternalTransfertWithNegativeBalance() {
 
         // GIVEN
 
@@ -274,7 +278,7 @@ public class TransfertServiceTest {
     }
 
     @Test // Cas non passant
-    public void newInternalTransfertWithNullBalance() throws Exception {
+    public void newInternalTransfertWithNullBalance() {
 
         // GIVEN
 
@@ -307,7 +311,7 @@ public class TransfertServiceTest {
     }
 
     @Test // Cas non passant
-    public void newInternalTransfertWithBuddyNotInListBuddy() throws Exception {
+    public void newInternalTransfertWithBuddyNotInListBuddy() {
 
         // GIVEN
 
@@ -337,5 +341,156 @@ public class TransfertServiceTest {
         // THEN
         DataNotExistException e = Assert.assertThrows(DataNotExistException.class,()->transfertService.transfertBuddy(internalTransfertTest) );
         assert (e.getMessage().contains("Add it before making a transfer"));
+    }
+
+    // ************************ EXTERNAL TRANSFERTS ****************************//
+
+    @Test // Cas passant
+    public void newExternalTransfertWithCorrectInformations()  {
+
+        // GIVEN
+
+        // Constantes pour le jeu de test
+        Integer userId = 2;
+        String iban = "IBANBAUER";
+        BigDecimal amount = BigDecimal.valueOf(-500);
+        String description = "Virement VERS ma banque";
+
+        balanceTest2 = BigDecimal.valueOf(5000);
+
+        ExternalTransfertDto transfertBankTest = new ExternalTransfertDto(userId,iban,amount);
+        User userTest = new User(firstNameTest2, lastNameTest2, emailUserTest2, passwordTest2, balanceTest2, createDate2);
+        BankAccount bankAccountTest = new BankAccount();
+
+        userTest.setId(userId);
+        bankAccountTest.setIban(iban);
+
+        // WHEN
+        Mockito.when(userDaoMock.findById(userId)).thenReturn(Optional.of(userTest));
+        Mockito.when(bankAccountDaoMock.findByIban(iban)).thenReturn(bankAccountTest);
+
+        ExternalTransfertDto externalTransfert = transfertService.transfertBank(transfertBankTest);
+
+        // THEN
+        Assertions.assertNotNull(externalTransfert);
+
+    }
+
+    @Test // Cas non passant
+    public void newExternalTransfertWithNonExistingUserId() {
+
+        // GIVEN
+
+        // Constantes pour le jeu de test
+        Integer userId = 99;
+        String iban = "IBANBAUER";
+        BigDecimal amount = BigDecimal.valueOf(-500);
+        String description = "Virement VERS ma banque";
+
+        balanceTest2 = BigDecimal.valueOf(5000);
+
+        ExternalTransfertDto transfertBankTest = new ExternalTransfertDto(userId,iban,amount);
+        User userTest = new User(firstNameTest2, lastNameTest2, emailUserTest2, passwordTest2, balanceTest2, createDate2);
+        BankAccount bankAccountTest = new BankAccount();
+
+        userTest.setId(userId);
+        bankAccountTest.setIban(iban);
+
+        // WHEN
+        Mockito.when(userDaoMock.findById(userId)).thenReturn(Optional.empty());
+        Mockito.when(bankAccountDaoMock.findByIban(iban)).thenReturn(bankAccountTest);
+
+        // THEN
+        DataNotExistException e = Assert.assertThrows(DataNotExistException.class,()->transfertService.transfertBank(transfertBankTest) );
+        assert (e.getMessage().contains("Transfert failed : user Id " + userId + " does not exist"));
+
+    }
+    @Test // Cas non passant
+    public void newExternalTransfertWithNonExistingIban() {
+
+        // GIVEN
+
+        // Constantes pour le jeu de test
+        Integer userId = 2;
+        String iban = "IBANBAUERBAD";
+        BigDecimal amount = BigDecimal.valueOf(-500);
+        String description = "Virement VERS ma banque";
+
+        balanceTest2 = BigDecimal.valueOf(5000);
+
+        ExternalTransfertDto transfertBankTest = new ExternalTransfertDto(userId,iban,amount);
+        User userTest = new User(firstNameTest2, lastNameTest2, emailUserTest2, passwordTest2, balanceTest2, createDate2);
+        BankAccount bankAccountTest = new BankAccount();
+
+        userTest.setId(userId);
+        bankAccountTest.setIban(iban);
+
+        // WHEN
+        Mockito.when(userDaoMock.findById(userId)).thenReturn(Optional.of(userTest));
+        Mockito.when(bankAccountDaoMock.findByIban(iban)).thenReturn(null);
+
+       // THEN
+        DataNotExistException e = Assert.assertThrows(DataNotExistException.class,()->transfertService.transfertBank(transfertBankTest) );
+        assert (e.getMessage().contains("Transfert failed : IBAN " + iban + " does not exist for this user Id"));
+
+    }
+    @Test // Cas non passant
+    public void newExternalTransfertWithAmountZero() {
+
+        // GIVEN
+
+        // Constantes pour le jeu de test
+        Integer userId = 2;
+        String iban = "IBANBAUER";
+        BigDecimal amount = BigDecimal.valueOf(0);
+        String description = "Virement VERS ma banque";
+
+        balanceTest2 = BigDecimal.valueOf(5000);
+
+        ExternalTransfertDto transfertBankTest = new ExternalTransfertDto(userId,iban,amount);
+        User userTest = new User(firstNameTest2, lastNameTest2, emailUserTest2, passwordTest2, balanceTest2, createDate2);
+        BankAccount bankAccountTest = new BankAccount();
+
+        userTest.setId(userId);
+        bankAccountTest.setIban(iban);
+
+        // WHEN
+        Mockito.when(userDaoMock.findById(userId)).thenReturn(Optional.of(userTest));
+        Mockito.when(bankAccountDaoMock.findByIban(iban)).thenReturn(bankAccountTest);
+
+        // THEN
+        DataIncorrectException e = Assert.assertThrows(DataIncorrectException.class,()->transfertService.transfertBank(transfertBankTest) );
+        assert (e.getMessage().contains("Transfert failed : the amount cannot be equal to 0"));
+
+    }
+
+    @Test // Cas non passant
+    public void newExternalTransfertWithInsufficientBalance() {
+
+        // GIVEN
+
+        // Constantes pour le jeu de test
+        Integer userId = 2;
+        String iban = "IBANBAUER";
+        BigDecimal amount = BigDecimal.valueOf(-500);
+        String description = "Virement VERS ma banque";
+
+        balanceTest2 = BigDecimal.valueOf(400);
+
+        ExternalTransfertDto transfertBankTest = new ExternalTransfertDto(userId,iban,amount);
+        User userTest = new User(firstNameTest2, lastNameTest2, emailUserTest2, passwordTest2, balanceTest2, createDate2);
+        BankAccount bankAccountTest = new BankAccount();
+
+        userTest.setId(userId);
+        bankAccountTest.setIban(iban);
+
+        // WHEN
+        Mockito.when(userDaoMock.findById(userId)).thenReturn(Optional.of(userTest));
+        Mockito.when(bankAccountDaoMock.findByIban(iban)).thenReturn(bankAccountTest);
+
+        // THEN
+        DataIncorrectException e = Assert.assertThrows(DataIncorrectException.class,()->transfertService.transfertBank(transfertBankTest) );
+        assert (e.getMessage().contains("Transfert failed : Insufficient balance :"));
+
     }
 }
