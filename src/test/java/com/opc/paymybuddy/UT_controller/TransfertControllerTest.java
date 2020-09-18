@@ -33,9 +33,6 @@ public class TransfertControllerTest {
     @MockBean
     private TransfertService transfertService;
 
-    // TODO Déplacer et renommer
-
-
     @Test
     public void transfertBuddyControllerTest() throws Exception {
 
