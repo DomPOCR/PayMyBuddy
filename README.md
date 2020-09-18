@@ -22,8 +22,23 @@ What things you need to install the software and how to install them
 
 <h2>Installing</h2>
 
+Run the sql command create.sql
 
+User and password to access to the DB are stored in *Environnement Variables*;.
 
+Use application.properties to change.
+
+**spring.datasource.username=${P6_USER_SQL}**;
+
+**spring.datasource.password=${P6_PWD_SQL}**; 
+
+<h2>Running App</h2>
+Post installation of MySQL, Java and Maven, you will have to set up the tables and data in the data base. For this, please run the sql commands present in the Data.sql file under the resources folder in the code base.
+
+Finally, you will be ready to import the code into an IDE of your choice and run the App.java to launch the application.
+
+<h2>Testing</h2>
+mvn clean install mvn clean verify (generate tests and test report) mvn site (generate reportings)
 <h2>Class Diagram</h2>
 
 
