@@ -40,10 +40,7 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
-    private User userMock;
-
-
-     // Encrypt password
+    // Encrypt password
     static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     // Constantes pour le jeu de test
@@ -60,20 +57,14 @@ public class UserControllerTest {
     String existingEmailTest = "dp@email.com";
     String existingPasswordTest = "mdp3";
 
-    @BeforeEach
-    public void setUpEach() {
-
-        userMock = new User(lastNameTest,firstNameTest,emailTest,passwordTest,balanceTest,createDate);
-
-    }
-
-    @Test
+   @Test
     public void getAllUserControllerTest() throws Exception {
 
         List<User> userList = new ArrayList<>();
+        User userTest = new User(lastNameTest,firstNameTest,emailTest,passwordTest,balanceTest,createDate);
 
         // GIVEN
-        userList.add(userMock);
+        userList.add(userTest);
         Mockito.when(userService.findAll()).thenReturn(userList);
 
         // WHEN
