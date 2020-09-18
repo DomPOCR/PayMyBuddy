@@ -20,11 +20,16 @@ What things you need to install the software and how to install them
 * Spring Boot 2.2.6
 * My SQL 8.0
 
-Installation
-Database création :
+<h2>Installing</h2>
+
+
 
 <h2>Class Diagram</h2>
 
 
 <img src = "https://github.com/DomPOCR/paymybuddy/blob/develop/P6_DiagrammeUML.png" title = "Diagramme UML">
 
+<h2>Modèle Physique de Données</h2>
+
+
+<img src = "https://github.com/DomPOCR/paymybuddy/blob/develop/P6_MPD.png" title = "Diagramme UML">
