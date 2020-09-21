@@ -42,10 +42,9 @@ public class TransfertServiceImpl implements TransfertService {
     BankAccountDao bankAccountDao;
 
     @Override
-    public List<Transfert> findAll(){
-            return transfertDao.findAll();
+    public List<Transfert> findAll() {
+        return transfertDao.findAll();
     }
-
 
 
     /**************************************************************************************/
@@ -75,11 +74,11 @@ public class TransfertServiceImpl implements TransfertService {
 
         if (userSender.get().getBalance().intValue() <= transfertBuddy.getAmount().intValue()) {
             String mess = String.format("Transfert failed : Insufficient balance : %d for this user (id %d %s) !!",
-                    userSender.get().getBalance().intValue(),userSender.get().getId(),userSender.get().getEmail());
+                    userSender.get().getBalance().intValue(), userSender.get().getId(), userSender.get().getEmail());
             logger.info(mess);
             throw new DataIncorrectException(mess);
         }
-        if (transfertBuddy.getSenderId() == transfertBuddy.getReceiverId()) {
+        if (transfertBuddy.getSenderId().equals(transfertBuddy.getReceiverId())) {
             String mess = String.format("Transfert failed : senderId and receiverId cannot be the same !!");
             logger.info(mess);
             throw new DataIncorrectException(mess);
@@ -101,8 +100,8 @@ public class TransfertServiceImpl implements TransfertService {
 
         logger.info("Internal transfert to buddy is beginning");
 
-        BigDecimal receiverNewBalance = new BigDecimal("0.00");
-        BigDecimal senderNewBalance = new BigDecimal("0.00");
+        BigDecimal receiverNewBalance;
+        BigDecimal senderNewBalance;
 
         // Mise à jour des soldes
         // **********************
@@ -118,7 +117,7 @@ public class TransfertServiceImpl implements TransfertService {
 
         // Sender
 
-       senderNewBalance = BigDecimal.valueOf(userSender.get().getBalance().intValue() - transfertBuddy.getAmount().intValue());
+        senderNewBalance = BigDecimal.valueOf(userSender.get().getBalance().intValue() - transfertBuddy.getAmount().intValue());
 
         userSender.get().setBalance(senderNewBalance);
         userDao.save(userSender.get());
@@ -130,10 +129,10 @@ public class TransfertServiceImpl implements TransfertService {
 
         Date now = new Date();
 
-        InternalTransfert internalTransfert = new InternalTransfert(userSender.get(),userReceiver.get(),
-                                                                    transfertBuddy.getAmount(),transfertBuddy.getDescription(),now);
+        InternalTransfert internalTransfert = new InternalTransfert(userSender.get(), userReceiver.get(),
+                transfertBuddy.getAmount(), transfertBuddy.getDescription(), now);
 
-         internalTransfertDao.save(internalTransfert);
+        internalTransfertDao.save(internalTransfert);
 
 
         String mess = String.format("Transfert buddy OK, from user id %d to user id %d amount = %d",
@@ -149,20 +148,20 @@ public class TransfertServiceImpl implements TransfertService {
     /***                        Transfert externe
      ***    -  depuis le compte interne vers la banque si montant négatif
      ***    -  depuis la banque vers le compte interne si montant positif
-
-    *************************************************************************************/
+     *************************************************************************************/
 
     @Override
     public ExternalTransfertDto transfertBank(ExternalTransfertDto transfertBank) {
 
         Optional<User> user = userDao.findById(transfertBank.getUserId());
         Optional<BankAccount> bankAccount = Optional.ofNullable(bankAccountDao.findByIban(transfertBank.getIban()));
+        User userBank = userDao.findUsersByListBankAccounts(bankAccount);
 
-        BigDecimal fees = new BigDecimal("0.00");
+        BigDecimal fees ;
         BigDecimal amountDebited = new BigDecimal("0.00");
-        BigDecimal amountCredited = new BigDecimal("0.00");
-        BigDecimal userNewBalance = new BigDecimal("0.00");
-        BigDecimal diffAmount = new BigDecimal("0.00");
+        BigDecimal amountCredited ;
+        BigDecimal userNewBalance ;
+        BigDecimal diffAmount ;
 
         //Get parameters values
         ResourceBundle bundle = ResourceBundle.getBundle("application");
@@ -172,12 +171,12 @@ public class TransfertServiceImpl implements TransfertService {
         // *********************************
 
         if (!user.isPresent()) {
-            String mess = String.format("Transfert failed : user Id %d does not exist !!",transfertBank.getUserId());
+            String mess = String.format("Transfert failed : user Id %d does not exist !!", transfertBank.getUserId());
             logger.info(mess);
             throw new DataNotExistException(mess);
         }
-        if(!bankAccount.isPresent()){
-            String mess = String.format("Transfert failed : IBAN %s does not exist for this user Id %d !!",transfertBank.getIban(),transfertBank.getUserId());
+        if (!bankAccount.isPresent() || (transfertBank.getUserId() != userBank.getId()) ) {
+            String mess = String.format("Transfert failed : IBAN %s does not exist for this user Id %d !!", transfertBank.getIban(), transfertBank.getUserId());
             logger.info(mess);
             throw new DataNotExistException(mess);
         }
@@ -201,16 +200,15 @@ public class TransfertServiceImpl implements TransfertService {
 
             amountCredited = transfertBank.getAmount().abs().add(fees);
 
-            if (diffAmount.compareTo(BigDecimal.ZERO) <0)
-            {
+            if (diffAmount.compareTo(BigDecimal.ZERO) < 0) {
                 String mess = String.format("Transfert failed : Insufficient balance : %d for this user (id %d %s) !! Need with fees %.2f",
-                        user.get().getBalance().intValue(),user.get().getId(),user.get().getEmail(),amountDebited.abs());
+                        user.get().getBalance().intValue(), user.get().getId(), user.get().getEmail(), amountDebited.abs());
                 logger.info(mess);
                 throw new DataIncorrectException(mess);
             }
 
             // Add car montant négatif (débit) pour amountDebited
-           userNewBalance = user.get().getBalance().add(amountDebited);
+            userNewBalance = user.get().getBalance().add(amountDebited);
 
             user.get().setBalance(userNewBalance);
             userDao.save(user.get());
@@ -234,8 +232,8 @@ public class TransfertServiceImpl implements TransfertService {
             externalTransfertDao.save(externalTransfert);
 
             ExternalTransfertDto externalTransfertDto = new ExternalTransfertDto(
-                                                        transfertBank.getUserId(),transfertBank.getIban(),transfertBank.getAmount(),fees.abs(),amountDebited.abs(),amountCredited,
-                                                        transfertBank.getDescription(),transfertBank.getAccountBalance());
+                    transfertBank.getUserId(), transfertBank.getIban(), transfertBank.getAmount(), fees.abs(), amountDebited.abs(), amountCredited,
+                    transfertBank.getDescription(), transfertBank.getAccountBalance());
 
             String mess = String.format("Transfert TO the bank OK, IBAN %s user id %d amount minus fees = %.2f",
                     transfertBank.getIban(),
@@ -245,7 +243,7 @@ public class TransfertServiceImpl implements TransfertService {
 
             return externalTransfertDto;
 
-        } else  {               // Transfert banque vers compte interne
+        } else {               // Transfert banque vers compte interne
 
             logger.info("External transfert FROM the bank is beginning ");
 
@@ -279,8 +277,8 @@ public class TransfertServiceImpl implements TransfertService {
             externalTransfertDao.save(externalTransfert);
 
             ExternalTransfertDto externalTransfertDto = new ExternalTransfertDto(
-                    transfertBank.getUserId(),transfertBank.getIban(),transfertBank.getAmount(),fees.abs(),amountDebited.abs(),amountCredited,
-                    transfertBank.getDescription(),transfertBank.getAccountBalance());
+                    transfertBank.getUserId(), transfertBank.getIban(), transfertBank.getAmount(), fees.abs(), amountDebited.abs(), amountCredited,
+                    transfertBank.getDescription(), transfertBank.getAccountBalance());
 
             String mess = String.format("Transfert FROM the bank OK, IBAN %s user id %d amount minus fees = %.2f",
                     transfertBank.getIban(),
@@ -289,8 +287,6 @@ public class TransfertServiceImpl implements TransfertService {
             logger.info(mess);
 
             return externalTransfertDto;
-
-
 
 
         }

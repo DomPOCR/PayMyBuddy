@@ -3,6 +3,7 @@ package com.opc.paymybuddy.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "user", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email", name = "uniqueEmailConstraint")})
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,7 +66,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.balance = balance;
-        this.createDate = createDate;
+        this.createDate = (Date)createDate.clone();
     }
 
     public User(@NotNull Integer id, @NotNull String lastname, @NotNull String firstname, @Email @NotNull String email, @NotNull String password, @NotNull BigDecimal balance, @NotNull Date createDate) {
@@ -75,7 +76,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.balance = balance;
-        this.createDate = createDate;
+        this.createDate = (Date)createDate.clone();
     }
 
     public Integer getId() {
@@ -127,11 +128,11 @@ public class User {
     }
 
     public Date getCreateDate() {
-        return createDate;
+        return (Date)createDate.clone();
     }
 
     public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+        this.createDate = (Date)createDate.clone();
     }
 
     public List<BankAccount> getListBankAccounts() {

@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "relation")
-public class Relation {
+public class Relation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +52,8 @@ public class Relation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Relation relation = (Relation) o;
-        if (relation.id != null && this.id != null) return relation.id == this.id;
+       // if (relation.id != null && this.id != null) return relation.id == this.id;
+        if (relation.id != null && this.id != null) return relation.id.equals(this.id);
         return Objects.equals(owner, relation.owner) &&
                 Objects.equals(buddy, relation.buddy);
     }

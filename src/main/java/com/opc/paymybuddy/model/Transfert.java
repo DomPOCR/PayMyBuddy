@@ -1,7 +1,5 @@
 package com.opc.paymybuddy.model;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -33,14 +31,14 @@ public class Transfert implements Serializable {
         super();
         this.amount = amount;
         this.description = description;
-        this.transactionDate = transactionDate;
+        this.transactionDate = (Date)transactionDate.clone();
     }
 
     public Transfert(@NotNull Integer id,@NotNull BigDecimal amount, String description, @NotNull Date transactionDate) {
         this.id = id;
         this.amount = amount;
         this.description = description;
-        this.transactionDate = transactionDate;
+        this.transactionDate = (Date)transactionDate.clone();
     }
 
     public Transfert() {
@@ -72,11 +70,11 @@ public class Transfert implements Serializable {
     }
 
     public Date getTransactionDate() {
-        return transactionDate;
+        return (Date)transactionDate.clone();
     }
 
     public void setTransactionDate(Date transactionDate) {
-        this.transactionDate = transactionDate;
+        this.transactionDate = (Date)transactionDate.clone();
     }
 
 }

@@ -28,7 +28,7 @@ public class BankAccountController {
 
     @GetMapping("/Accounts")
     @ResponseStatus(HttpStatus.OK)
-    public List<BankAccount> ListBankAccount() {
+    public List<BankAccount> listBankAccount() {
 
        return bankAccountService.findAll();
     }
@@ -36,7 +36,7 @@ public class BankAccountController {
     // Ajout d'un compte
 
     @PostMapping("/AddAccount/{userId}")
-    public ResponseEntity <BankAccount> AddAccount(@RequestBody BankAccount addAccount, @PathVariable Integer userId ) throws Exception {
+    public ResponseEntity <BankAccount> addAccount(@RequestBody BankAccount addAccount, @PathVariable Integer userId ) throws Exception {
 
         BankAccount bankAccountAdd = bankAccountService.addBankAccount(addAccount, userId);
         logger.info("Add bank account for userid" + userId + " OK");

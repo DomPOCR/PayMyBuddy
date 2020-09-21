@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean addUser(UserDto addUser) throws Exception {
 
-        DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+       // DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
         User user = new User();
@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserService {
 
             if (userToUpdate.isPresent()) {
 
-                if (buddyToAdd.getEmail() == userToUpdate.get().getEmail()) {
+                if (buddyToAdd.getEmail().equals(userToUpdate.get().getEmail())) {
 
                     String mess = String.format("Add buddy failed : this buddy %s has the same mail as the user to update (id %d )!!", email, userIdToUpdate);
                     logger.info(mess);

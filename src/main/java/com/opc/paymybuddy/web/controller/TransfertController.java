@@ -34,7 +34,7 @@ public class TransfertController {
 
     // Liste des transferts
     @GetMapping(value = "/transfert")
-    public List<Transfert> ListTransfert() {
+    public List<Transfert> listTransfert() {
 
         return transfertService.findAll();
 

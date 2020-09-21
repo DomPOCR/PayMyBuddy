@@ -38,7 +38,7 @@ public class UserController {
 
     @GetMapping(value = "/Users/{email}")
     @ResponseStatus(HttpStatus.OK)
-    public User UserByEmail(@PathVariable String email) {
+    public User userByEmail(@PathVariable String email) {
 
         return userService.findByEmail(email);
     }
@@ -47,7 +47,7 @@ public class UserController {
 
     @GetMapping(value = "/UsersCount")
     @ResponseStatus(HttpStatus.OK)
-    public long UsersCount() {
+    public long usersCount() {
 
         return userService.count();
     }
@@ -66,7 +66,7 @@ public class UserController {
     // champs requis : email d'un user enregistré
     @PostMapping("/AddBuddy/{userId}")
     //public ResponseEntity <UserDto> AddBuddy(@RequestBody UserDto addBuddy, @PathVariable Integer userId ) throws Exception {
-    public ResponseEntity <User> AddBuddy(@RequestBody User addBuddy, @PathVariable Integer userId ) throws Exception {
+    public ResponseEntity <User> addBuddy(@RequestBody User addBuddy, @PathVariable Integer userId ) throws Exception {
 
         User userUpdated = userService.addBuddy(addBuddy.getEmail(),userId);
 
