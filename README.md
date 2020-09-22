@@ -33,9 +33,9 @@ Use application.properties to change.
 **spring.datasource.password=${P6_PWD_SQL}**; 
 
 <h2>Running App</h2>
-Post installation of MySQL, Java and Maven, you will have to set up the tables and data in the data base. For this, please run the sql commands present in the Data.sql file under the resources folder in the code base.
+To start the application execute :
 
-Finally, you will be ready to import the code into an IDE of your choice and run the App.java to launch the application.
+**java -jar PayMyBuddy-0.0.1-SNAPSHOT.jar**
 
 <h2>Testing</h2>
 mvn clean install mvn clean verify (generate tests and test report) mvn site (generate reportings)
